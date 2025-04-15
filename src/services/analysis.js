@@ -1,4 +1,4 @@
-const baseUrl = window._env_?.VITE_APP_BASE_URL || import.meta.env.VITE_APP_BASE_URL;
+const baseUrl = import.meta.env.VITE_APP_BASE_URL
 
 export async function analyzeSession(sessionId) {
   const response = await fetch(`${baseUrl}/analyze`, {

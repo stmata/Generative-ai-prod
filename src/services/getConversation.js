@@ -1,5 +1,4 @@
-const baseUrl = window._env_?.VITE_APP_BASE_URL || import.meta.env.VITE_APP_BASE_URL;
-
+const baseUrl = import.meta.env.VITE_APP_BASE_URL
 
 export const getConversation = async () => {
     const sessionId = localStorage.getItem("session_id");
@@ -17,7 +16,11 @@ export const getConversation = async () => {
     if (!response.ok) {
         throw new Error("Error fetching conversation history");
     }
+
     const data = await response.json();
-    console.log(data.conversation_history);
-    return data.conversation_history;
+    return {
+        conversation_history: data.conversation_history,
+        message_value: data.message_value,
+    };
 };
+

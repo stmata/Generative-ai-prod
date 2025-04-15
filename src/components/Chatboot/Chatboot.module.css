@@ -4,122 +4,23 @@
     height: 100vh;
     position: relative;
     overflow-x: hidden;
-
     font-family: sans-serif;
-}
-
-.sidebarContainer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    overflow: hidden;
-    transition: width 0.3s ease;
-    z-index: 100;
-    padding-top: 20px;
-}
-
-.sidebarOpen {
-    width: 300px;
-    background-color: #303030;
-}
-
-.sidebarClosed {
-    width: 60px;
-}
-
-.sidebarHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.sidebarButton,
-.addButton {
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-}
-
-.conversationList {
-    padding: 10px;
-    color: var(--primary-color);
-    overflow-y: auto;
-    height: calc(100% - 50px);
-}
-
-.conversationDate {
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.conversationItem {
-    padding: 8px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-}
-
-.activeConversation {
-    background-color: var(--primary-color);
-}
-
-.moreButton {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-weight: bolder;
-    text-align: right;
-    float: right;
-}
-
-.deleteTool {
-    position: absolute;
-    right: -5px;
-    top: 100%;
-    transform: translateY(-50%);
-    background-color: #fff;
-    border-radius: 4px;
-    padding: 4px 8px;
-    z-index: 10;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.deleteTool button {
-    background: none;
-    border: none;
-    color: #BF0030;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
 }
 
 .mainContent {
     margin-left: 60px;
     transition: margin-left 0.3s ease;
     height: 100%;
-    overflow: hidden;
     overflow-x: hidden !important;
-
 }
 
 .conversation {
     height: calc(100vh - 60px);
-    overflow-y: auto;
-    padding: 10px;
     box-sizing: border-box;
     overflow-x: hidden;
-
     text-align: center;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
 }
 
 .messages {
@@ -142,7 +43,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: var(--primary-color);
+    color: gray;
 }
 
 .inputContainerCentered {
@@ -155,7 +56,7 @@
     right: 5.5vw;
     bottom: 10px;
     padding: 10px;
-    color: var(--primary-color);
+    color: gray;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -163,10 +64,21 @@
 
 .sendButton2 {
     position: absolute;
-    right: 15px;
+    right: 8%;
     bottom: 10px;
     padding: 10px;
-    color: var(--primary-color);
+    color: gray;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sendButton3 {
+    position: absolute;
+    right: 1.2%;
+    bottom: 10px;
+    padding: 10px;
+    color: gray;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -184,17 +96,13 @@
     z-index: 101;
 }
 
-
 .activeInput {
     padding: 10px 50px 10px 10px;
-    /* color: white; */
     border-radius: 4px;
     resize: none;
-    overflow-y: auto;
     height: auto;
     max-height: 25vh;
     font-weight: bold;
-    /* background-color: #303030; */
     color: #303030;
     background-color: white;
     height: 2vh;
@@ -203,11 +111,43 @@
     width: 60vw;
     border-radius: 25px;
     min-height: 6.5vh;
+    overflow-y: auto;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.activeInput::-webkit-scrollbar {
+    display: none;
+}
+
+.activeInput2 {
+    resize: none;
+    min-height: 10vh;
+    max-height: 25vh;
+    font-weight: bold;
+    color: #303030;
+    background-color: white;
+    font-size: 16px;
+    align-items: center !important;
+    width: 60vw;
+    border-radius: 25px;
+    min-height: 6.5vh;
+    overflow-y: auto;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    box-shadow: 4px 8px 28px rgba(0, 0, 0, 0.2);
+    border: none;
+    padding: 20px !important;
 }
 
 .activeInput:focus {
     outline: none;
-    border: 2px solid #BF0030;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.activeInput2:focus {
+    outline: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .inputContainerInactive {
@@ -219,28 +159,29 @@
     box-sizing: border-box;
     z-index: 101;
     margin: 0 auto;
+
 }
 
 .inactiveInput {
     width: 60vw;
     padding: 10px 50px 10px 10px;
-    /* color: white; */
-    /* background-color: #303030; */
     color: #303030;
     background-color: white;
     margin-top: 5vh;
     border-radius: 25px;
     resize: none;
-    overflow-y: auto;
-    height: 20vh !important;
-    max-height: 25vh;
-    font-weight: bold;
-    font-size: 16px;
+    height: 25vh !important;
+    max-height: 30vh !important;
+    font-size: 18px;
+    box-shadow: 4px 8px 18px rgba(0, 0, 0, 0.2);
+    border: none;
+    padding: 20px;
+
 }
 
 .inactiveInput:focus {
     outline: none;
-    border: 2px solid #BF0030;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sidebarOpen {
@@ -277,6 +218,65 @@
     animation: spin 1s linear infinite;
 }
 
+.sendButton {
+    color: #BF0030;
+}
+
+.sendButton :global(svg),
+.sendButton2 :global(svg),
+.sendButton3 :global(svg) {
+    color: gray;
+}
+
+.sendButtonActive :global(svg),
+.sendButton2Active :global(svg),
+.sendButton3Active :global(svg) {
+    color: black;
+}
+
+.limitReachedAlert {
+    position: fixed;
+    bottom: 2vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60vw;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    z-index: 101;
+    background: #fff0f6;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeInUp 0.4s ease;
+    border: 2px solid #ffd6e7;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.limitReachedAlert p {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -288,6 +288,10 @@
 }
 
 @media (max-width: 752px) {
+    .sendButton3 {
+        right: 18%;
+    }
+
     .sidebarOpen {
         position: fixed;
         top: 0;

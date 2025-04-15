@@ -54,7 +54,7 @@ const IdeaModal = ({ onClose }) => {
                     <svg /* icône X */> {/* ... */} </svg>
                 </button>
 
-                <h2 className={styles.title}>Your Idea</h2>
+                <h2 className={styles.title}>Your Last Idea Matters!</h2>
 
                 <textarea
                     className={styles.textarea}
@@ -71,7 +71,7 @@ const IdeaModal = ({ onClose }) => {
                     onClick={handleSendIdea}
                     disabled={isSending || !idea.trim()}
                 >
-                    {isSending ? "Sending..." : "Send"}
+                    {isSending ? "Sending..." : "Let’s go!"}
                 </button>
 
             </div>

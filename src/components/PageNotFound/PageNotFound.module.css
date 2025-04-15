@@ -33,9 +33,15 @@
 }
 
 .link {
+    color: gray;
+    text-decoration: underline;
+    font-weight: 900;
+
+}
+.link:hover {
     color: var(--primary-color);
     text-decoration: underline;
-    font-weight: bold;
+    font-weight: 900;
 
 }
 
