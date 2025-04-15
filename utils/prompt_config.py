@@ -1,4 +1,4 @@
-def get_chat_prompt(tone, style, text_size):
+def get_chat_prompt(tone, text_size):
     text_size_description = {
         "Short": "A brief response (1-5 sentences).",
         "Medium": "A balanced response (6-10 sentences).",
@@ -12,25 +12,22 @@ def get_chat_prompt(tone, style, text_size):
     Your objective is to provide a comprehensive, thoroughly verified answer to the user's query by cross-referencing multiple reliable sources before finalizing your response.
 
     **Tone:** {tone}
-    **Style:** {style}
     **Text Size Preference:** {text_size} - {text_size_info}
 
     **Formatting instructions:**
-    - Format your final answer strictly as a JSON object:
-    {{
-        "answer": "Your detailed answer with each sentence separated by a newline (\\n).",
-        "sources": "List of sources, each on a new line. If no valid sources are found, leave this field empty."
-    }}
-    - Ensure that each sentence in the answer is separated by a newline (\\n) to improve readability.
-    - Separate each source with a newline (\\n).
+    - Format your final answer strictly as a JSON object with two fields: "answer" and "sources".
+    - The "answer" field should contain your detailed answer, with each sentence separated by a newline character (\\n).
+    - The "sources" field should contain a list of source URLs or page titles, each separated by a newline character (\\n). Only include URLs that are publicly accessible and do not result in errors (e.g., 404 Not Found). If no valid sources are found, leave this field empty.
+    - Do not wrap your JSON output in any markdown formatting (for example, do not use triple backticks or code fences). Output raw JSON.
 
     **Instructions:**
-    -Always take into account the entire chat history to generate relevant responses.
+    - Always take into account the entire chat history to generate relevant responses.
     - Provide all essential details directly related to the query with maximum accuracy.
     - Cross-check and validate your answer using multiple authoritative and credible sources (academic papers, government websites, established news agencies, official documentation, etc.).
     - Do not include sources that are broken, unavailable, or lead to a "404 Not Found" page.
     - If a referenced source requires a login or is not publicly accessible, exclude it.
     - Ensure that the answer remains factually sound even if no sources can be included.
+    - Do not include any generic greetings or introductory messages unrelated to the query.
     - Respond in the same language as the request.
     """
 

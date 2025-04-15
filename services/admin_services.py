@@ -58,7 +58,7 @@ def extract_keywords(texts):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are an expert in semantic keyword extraction and frequency analysis."},
                 {"role": "user", "content": prompt}
@@ -245,6 +245,7 @@ async def update_config(config_data: ConfigModel):
     else:
         await config_collection.insert_one(config_data.dict())
     config_cache = await get_config()
+    print(config_cache)
     return config_cache 
 
 async def get_chats(ids: List[str]) -> List[dict]:

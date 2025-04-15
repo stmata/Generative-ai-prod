@@ -17,8 +17,10 @@ async def chat_stream_endpoint(request: ChatRequest, session_id: str = Depends(g
 
 @router.get("/conversation")
 async def conversation_endpoint(session_id: str):
-    conversation = await get_conversation(session_id)
-    return {"conversation_history": conversation}
+    conversation, nbreMessage = await get_conversation(session_id)
+    print(nbreMessage)
+    return {"conversation_history": conversation,
+        "message_value": nbreMessage}
 
 @router.post("/add-finalIdea")
 async def add_final_idea_endpoint(final_idea: FinalIdeaRequest, session_id: str = Query(...)):

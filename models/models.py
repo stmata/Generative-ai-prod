@@ -3,8 +3,9 @@ from typing import List, Optional
 
 class ConfigModel(BaseModel):
     tone: str
-    style: str
     textSize: str
+    messageValue: int
+    durationValue: str
 
 class DownloadRequest(BaseModel):
     ids: List[str]  

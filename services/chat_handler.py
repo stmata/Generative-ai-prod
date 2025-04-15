@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 from llama_index.core.base.llms.types import ChatMessage, MessageRole
 from services.chat_service import get_buffer_for_session, wrapped_client
-from services.saveConversation_service import save_conversation  
+from services.saveConversation_service import save_conversation, load_conversation 
 from utils.prompt_config import get_chat_prompt
 from services.mongodb_connection import MongoDBManager
 from utils.cache_config import config_cache
@@ -16,13 +16,10 @@ db_manager = MongoDBManager()
 if config_cache is None:  
     config_collection = db_manager.get_collection("config")
     config_cache = config_collection.find_one({})
-
 tone = config_cache.get("tone", "Neutral")
-style = config_cache.get("style", "Balanced")
 text_size = config_cache.get("textSize", "Medium")
 
-
-SYSTEM_INSTRUCTIONS = get_chat_prompt(tone, style, text_size)
+SYSTEM_INSTRUCTIONS = get_chat_prompt(tone, text_size)
 
 # SYSTEM_INSTRUCTIONS = """
 # You are an advanced AI assistant specialized in delivering detailed, precise, and fact-based responses. Your objective is to provide a comprehensive, thoroughly verified answer to the user's query by cross-referencing multiple reliable sources before finalizing your response. 
@@ -44,20 +41,26 @@ SYSTEM_INSTRUCTIONS = get_chat_prompt(tone, style, text_size)
 
 
 async def process_chat_stream(message: str, session_id: str, conversation_history: list) -> StreamingResponse:
+    if not conversation_history:
+        conversation_history = await load_conversation(session_id)
+
     memory_buffer = get_buffer_for_session(session_id)
-    user_timestamp = datetime.now(CANADA_TZ).isoformat()
-    user_message_metadata = {
-        "role": "user",
-        "content": message,
-        "timestamp": user_timestamp,
-        "size": len(message)
-    }
-    conversation_history.append(user_message_metadata)
-    new_message = ChatMessage(
-        role=MessageRole.USER,
-        content=message
-    )
-    memory_buffer.put(new_message)
+    if conversation_history and conversation_history[-1]["role"] == "user":
+        print("Message déjà présent, on ne l'ajoute pas.")
+    else:
+        user_timestamp = datetime.now(CANADA_TZ).isoformat()
+        user_message_metadata = {
+            "role": "user",
+            "content": message,
+            "timestamp": user_timestamp,
+            "size": len(message)
+        }
+        conversation_history.append(user_message_metadata)
+        new_message = ChatMessage(
+            role=MessageRole.USER,
+            content=message
+        )
+        memory_buffer.put(new_message)
     chat_history = memory_buffer.get()
     messages_to_send = [{"role": "system", "content": SYSTEM_INSTRUCTIONS}]
     messages_to_send += [{"role": msg.role.value.lower(), "content": msg.content} for msg in chat_history[-10:]]
@@ -69,7 +72,7 @@ async def process_chat_stream(message: str, session_id: str, conversation_histor
 
     try:
         response = wrapped_client._client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",
             messages=messages_to_send,
             temperature=0.3,
             stream=True

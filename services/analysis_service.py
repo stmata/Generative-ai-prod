@@ -84,7 +84,7 @@ def analyze_final_idea(conversation_history, final_idea):
     prompt = get_analysis_prompt(conversation_history, final_idea)
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini", 
+            model="gpt-4o", 
             messages=[
                 {
                     "role": "system",

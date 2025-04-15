@@ -4,29 +4,6 @@ from services.mongodb_connection import MongoDBManager
 mongo_manager = MongoDBManager()
 collection = mongo_manager.get_collection('chats')
 
-async def save_conversation(session_id: str, new_messages: list):
-    """
-    Ajoute les nouveaux messages à l'historique de conversation pour une session donnée.
-    Si le document n'existe pas, il est créé avec les messages fournis.
-    """
-
-    def sync_update():
-        existing_doc = collection.find_one({"session_id": session_id})
-        
-        if existing_doc:
-            return collection.update_one(
-                {"session_id": session_id},
-                {"$push": {"conversation_history": {"$each": new_messages}}}
-            )
-        else:
-            return collection.insert_one({
-                "session_id": session_id,
-                "conversation_history": new_messages
-            })
-
-    result = await asyncio.to_thread(sync_update)
-    return result
-
 async def load_conversation(session_id: str) -> list:
     """
     Charge l'historique de conversation pour une session donnée.
@@ -52,3 +29,31 @@ async def update_final_idea(session_id: str, idea: str):
         )
     result = await asyncio.to_thread(sync_update)
     return result
+
+async def save_conversation(session_id: str, conversation_history: list):
+    """
+    Ajoute les nouveaux messages sans dupliquer ceux déjà présents dans la base.
+    """
+    def sync_save():
+        doc = collection.find_one({"session_id": session_id})
+        existing_history = doc.get("conversation_history", []) if doc else []
+
+        # Éviter les doublons exacts (par exemple, basé sur 'role' + 'content' + 'timestamp')
+        existing_set = {f"{m['role']}|{m['content']}|{m['timestamp']}" for m in existing_history}
+        new_filtered = [
+            m for m in conversation_history
+            if f"{m['role']}|{m['content']}|{m['timestamp']}" not in existing_set
+        ]
+
+        combined_history = existing_history + new_filtered
+
+        return collection.update_one(
+            {"session_id": session_id},
+            {"$set": {"conversation_history": combined_history}},
+            upsert=True
+        )
+
+    result = await asyncio.to_thread(sync_save)
+    return result
+
+

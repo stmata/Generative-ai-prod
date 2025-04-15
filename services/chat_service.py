@@ -48,7 +48,7 @@ class AzureOpenAIWrapper(LLM):
             for msg in messages
         ]
         response = self._client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",
             messages=formatted_messages,
             temperature=kwargs.get("temperature", 0.2),
             stream=False
@@ -71,7 +71,7 @@ class AzureOpenAIWrapper(LLM):
             for msg in messages
         ]
         response = self._client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",
             messages=formatted_messages,
             temperature=kwargs.get("temperature", 0.2),
             stream=True
