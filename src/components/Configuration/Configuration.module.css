@@ -4,7 +4,7 @@
   width: 100vw;
   padding: 16px;
   gap: 2vw;
-
+   height: max-content;
 }
 
 .headerConfig {

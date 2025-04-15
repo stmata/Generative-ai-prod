@@ -1,15 +1,3 @@
-.tabsWrapper {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100vw;
-    background: white;
-    display: flex;
-    justify-content: center;
-    z-index: 1000;
-}
-
 .containerTabs {
     background-color: aquamarine !important;
     height: 100vh;
@@ -18,18 +6,43 @@
     flex-direction: column;
 }
 
-.tabsContainer {
+.tabsWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    background: white;
     display: flex;
     justify-content: center;
+    z-index: 1000;
+}
+
+.tabsContainer {
     width: 100vw;
+    display: flex;
+    justify-content: center;
 }
 
 .tabs {
+    position: relative;
+    width: 100%;
     display: flex;
-    padding: 10px 0;
-    width: 100vw;
     align-items: center;
-    justify-content: center;
+    padding: 10px 0;
+}
+
+.logo {
+    position: absolute;
+    left: 2vw;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.navItems {
+    margin: 0 auto;
+    display: flex;
     gap: 30px;
 }
 
@@ -85,18 +98,28 @@
     background: #f0f0f0;
 }
 
+@media screen and (max-width: 1000px) {
+    .logo {
+        display: none;
+    }
+}
+
 @media screen and (max-width: 600px) {
     .tabContent {
         padding-top: 20vh;
     }
 
-    .tabs {
+    .navItems {
         flex-direction: column;
-        gap: 10px;
     }
 
     .tab {
-        width: 80%;
+        width: 100%;
+        text-align: center;
         justify-content: center;
+    }
+
+    .logo {
+        display: none;
     }
 }

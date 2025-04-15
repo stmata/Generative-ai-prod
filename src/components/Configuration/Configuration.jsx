@@ -1,33 +1,47 @@
 import React, { useState, useEffect } from "react";
 import ToneSelector from "./widgets/ToneSelector/ToneSelector";
-import StyleSelector from "./widgets/StyleSelector/StyleSelector";
+// import StyleSelector from "./widgets/StyleSelector/StyleSelector";
 import TextSizeSelector from "./widgets/TextSizeSelector/TextSizeSelector";
 import Modal from "../Modal/Modal";
 import styles from "./Configuration.module.css";
 import settingService from "../../services/settingService";
+import ConversationSizeSelector from "./widgets/ConversationSizeSelector/ConversationSizeSelector";
 
 function Configuration() {
     const [tone, setTone] = useState("");
-    const [style, setStyle] = useState("");
     const [textSize, setTextSize] = useState("");
+    const [messageValue, setMessageValue] = useState(10);      // Par défaut 10 messages
+    const [durationValue, setDurationValue] = useState("15 min"); // Par défaut "15 min"
+
     const [loading, setLoading] = useState(true);
     const [modal, setModal] = useState({ open: false, type: "", message: "" });
 
     useEffect(() => {
         async function fetchConfig() {
-            const config = await settingService.getSettings();
-            if (config) {
-                setTone(config.tone);
-                setStyle(config.style);
-                setTextSize(config.textSize);
+            try {
+                const config = await settingService.getSettings();
+                if (config) {
+                    if (config.tone) setTone(config.tone);
+                    if (config.textSize) setTextSize(config.textSize);
+                    if (config.messageValue) setMessageValue(config.messageValue);
+                    if (config.durationValue) setDurationValue(config.durationValue);
+                }
+            } catch (error) {
+                console.error("Error fetching config:", error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         }
         fetchConfig();
     }, []);
 
     const handleSave = async () => {
-        const configData = { tone, style, textSize };
+        const configData = {
+            tone,
+            textSize,
+            messageValue,
+            durationValue,
+        };
 
         try {
             const response = await settingService.saveSettings(configData);
@@ -35,20 +49,20 @@ function Configuration() {
                 setModal({
                     open: true,
                     type: "success",
-                    message: "Settings saved successfully! "
+                    message: "Settings saved successfully! ",
                 });
             } else {
                 setModal({
                     open: true,
                     type: "warning",
-                    message: "Failed to save settings. "
+                    message: "Failed to save settings. ",
                 });
             }
         } catch (error) {
             setModal({
                 open: true,
-                type: "Warning",
-                message: "Error saving settings. "
+                type: "warning",
+                message: "Error saving settings. ",
             });
         }
     };
@@ -63,10 +77,16 @@ function Configuration() {
 
     return (
         <div className={styles.containerConfig}>
-
             <ToneSelector tone={tone} setTone={setTone} />
-            <StyleSelector style={style} setStyle={setStyle} />
+            {/* <StyleSelector style={style} setStyle={setStyle} /> */}
             <TextSizeSelector textSize={textSize} setTextSize={setTextSize} />
+
+            <ConversationSizeSelector
+                messageValue={messageValue}
+                setMessageValue={setMessageValue}
+                durationValue={durationValue}
+                setDurationValue={setDurationValue}
+            />
 
             <button className={styles.saveButton} onClick={handleSave}>
                 Save

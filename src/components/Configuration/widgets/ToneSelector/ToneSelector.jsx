@@ -1,29 +1,25 @@
 import React, { useEffect } from "react";
 import styles from "./ToneSelector.module.css";
-import { FaRegSmile, FaRegMeh, FaPenNib, FaRegLaughBeam } from "react-icons/fa";
+import { FaRegLaughBeam } from "react-icons/fa";
 import { IoBriefcaseOutline } from "react-icons/io5";
-import { TiThumbsUp } from "react-icons/ti";
 import { PiGavel, PiCoffeeBold } from "react-icons/pi";
 import { HiOutlineLightBulb } from "react-icons/hi";
+import { FaPenNib } from "react-icons/fa";
 
 function ToneSelector({ tone, setTone }) {
     const tones = [
-        { label: "Friendly", icon: <FaRegSmile /> },
-        { label: "Professional", icon: <IoBriefcaseOutline /> },
-        { label: "Neutral", icon: <FaRegMeh /> },
-        { label: "Encouraging", icon: <TiThumbsUp /> },
-        { label: "Humorous", icon: <FaRegLaughBeam /> },
-        { label: "Serious", icon: <PiGavel /> },
-        { label: "Casual", icon: <PiCoffeeBold /> },
-        { label: "Inspirational", icon: <HiOutlineLightBulb /> },
+        { label: ["Formal", "& Professional"], icon: <PiGavel /> },
+        { label: ["Friendly", "& Casual"], icon: <PiCoffeeBold /> },
+        { label: ["Empathic", "& Supportive"], icon: <HiOutlineLightBulb /> },
+        { label: ["Light", "& Humorous"], icon: <FaRegLaughBeam /> },
+        { label: ["Authoritative", "& Directive"], icon: <IoBriefcaseOutline /> },
     ];
 
     useEffect(() => {
         if (!tone && setTone) {
-            setTone(tones[0].label);
+            setTone(tones[0].label.join(" "));
         }
     }, [tone, setTone]);
-
 
     return (
         <div className={styles.toneSelector}>
@@ -33,24 +29,31 @@ function ToneSelector({ tone, setTone }) {
             <p className={styles.toneSubtitle}>Choose which tone you would like to use.</p>
 
             <div className={styles.toneOptions}>
-                {tones.map((t) => (
-                    <label
-                        key={t.label}
-                        className={styles.toneLabel}
-                        onClick={() => setTone(t.label)}
-                    >
-                        <input
-                            type="radio"
-                            name="tone"
-                            value={t.label}
-                            checked={tone === t.label}
-                            onChange={() => setTone(t.label)}
-                            className={styles.toneInput}
-                        />
-                        <span className={styles.toneIcon}>{t.icon}</span>
-                        <span className={styles.toneText}>{t.label}</span>
-                    </label>
-                ))}
+                {tones.map((t) => {
+                    const fullLabel = t.label.join(" ");
+                    return (
+                        <label
+                            key={fullLabel}
+                            className={styles.toneLabel}
+                            onClick={() => setTone(fullLabel)}
+                        >
+                            <input
+                                type="radio"
+                                name="tone"
+                                value={fullLabel}
+                                checked={tone === fullLabel}
+                                onChange={() => setTone(fullLabel)}
+                                className={styles.toneInput}
+                            />
+                            <span className={styles.toneIcon}>{t.icon}</span>
+                            <span className={styles.toneText}>
+                                {t.label.map((line, i) => (
+                                    <div key={i}>{line}</div>
+                                ))}
+                            </span>
+                        </label>
+                    );
+                })}
             </div>
         </div>
     );

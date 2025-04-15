@@ -1,0 +1,168 @@
+.selectorContainer {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+}
+
+.selectorTitle {
+    margin-bottom: 8px;
+    color: var(--primary-color);
+}
+
+.selectorSubtitle {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 12px;
+}
+
+.modeButtons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    background-color: white;
+    width: 100%;
+}
+
+.modeButtonWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modeButton {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: black;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-weight: 900 !important;
+    font-size: 1.3vw;
+    padding: 15px;
+    gap: 3vh;
+    width: 100%;
+}
+
+.modeButton svg {
+    font-size: 1.8vw;
+    color: var(--primary-color) !important;
+    color: inherit;
+}
+
+.modeButton:hover {
+    border: none;
+
+}
+
+.customSelectContainer {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 12px;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex
+}
+
+.customSelect {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 900;
+    color: black;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: 0.3s;
+    user-select: none;
+    width: 50%;
+}
+
+.optionList {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    background-color: white;
+    border: 3px solid transparent;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
+
+.optionList li {
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: 900;
+    color: black;
+    text-align: center;
+
+}
+
+.optionList li:hover {
+    background-color: rgba(191, 0, 48, 0.05);
+    color: var(--primary-color);
+}
+
+.selectedOption {
+    background-color: rgba(191, 0, 48, 0.05);
+    color: var(--primary-color) !important;
+}
+
+.customSelect span {
+    text-align: center;
+    flex-grow: 0;
+    margin-right: 20px;
+}
+
+@media (max-width: 992px) {
+    .modeButtons {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .modeButton {
+        font-size: 2vw;
+    }
+
+    .modeButton svg {
+        font-size: 2.5vw;
+    }
+}
+
+@media (max-width: 600px) {
+    .modeButton {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .modeButton svg {
+        font-size: 20px;
+    }
+
+    .customSelect {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .optionList li {
+        font-size: 14px;
+        padding: 10px;
+    }
+}

@@ -23,6 +23,7 @@ const settingService = {
 
     saveSettings: async (configData) => {
         try {
+            console.log(configData)
             const response = await fetch(`${API_BASE_URL}/config`, {
                 method: "PUT",
                 headers: {
