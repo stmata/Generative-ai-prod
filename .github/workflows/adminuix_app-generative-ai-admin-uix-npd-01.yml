@@ -47,6 +47,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+          path: release.zip
+
       
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
@@ -54,5 +56,5 @@ jobs:
         with:
           app-name: 'app-generative-ai-admin-uix-npd-01'
           slot-name: 'Production'
-          package: .
+          package: release.zip
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F8472E92EF074086AB6E69DD7E761649 }}
