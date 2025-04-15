@@ -1,0 +1,43 @@
+.containerConfig {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  padding: 16px;
+  gap: 2vw;
+
+}
+
+.headerConfig {
+  display: flex;
+  align-items: center;
+  text-align: left;
+
+}
+
+.titleConfig {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 2rem;
+}
+
+.saveButton {
+  margin: 0 auto;
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  background-color: white;
+  width: 10vw;
+}
+
+.saveButton:hover {
+
+  color: white;
+  background-color: var(--primary-color);
+  border: none;
+}

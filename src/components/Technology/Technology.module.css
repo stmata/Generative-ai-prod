@@ -1,0 +1,106 @@
+.container {
+  padding: 2rem;
+  background-color: white;
+  font-family: Arial, sans-serif;
+  width: 100vw;
+  height: fit-content !important;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #BF0030;
+  margin-bottom: 1rem;
+  text-align: center;
+  margin-top: 8vh;
+  font-family: var(--font-family-nextgen);
+}
+
+.description {
+  font-size: 1.2rem;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  font-weight: bold;
+  color: black;
+}
+
+.graphsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rem;
+  justify-content: center;
+  margin-bottom: 2vh;
+
+}
+
+.graphSection {
+  flex: 1 1 100%;
+  max-width: 30%;
+
+}
+
+.graphSection h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.graphSection1 {
+  flex: 1 1 100%;
+  max-width: 45%;
+  height: 60%;
+}
+
+.graphSection1 h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.references {
+  font-size: 1rem;
+  color: #777;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    height: 100vh;
+  }
+
+  .graphsContainer {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .graphSection,
+  .graphSection1 {
+    max-width: 100%;
+  }
+
+  .graphSection {
+    max-width: 85%;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .graphSection h2,
+  .graphSection1 h2 {
+    font-size: 1.5rem;
+  }
+
+  .references {
+    font-size: 0.9rem;
+  }
+}

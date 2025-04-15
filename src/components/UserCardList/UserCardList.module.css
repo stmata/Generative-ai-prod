@@ -1,0 +1,135 @@
+.userGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3vw;
+    padding: 20px;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    justify-content: center;
+}
+
+@media (max-width: 1099px) {
+    .userGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 659px) {
+    .userGrid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    justify-content: center;
+}
+
+.userImage {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.userIcon {
+    font-size: 8vw;
+    color: gray;
+}
+
+.undinishedIcon {
+    font-size: 8vw;
+    color: var(--primary-color);
+}
+
+.deleteIcon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: gray;
+}
+
+.session_id {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+
+}
+
+.timeRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.clockIcon {
+    font-size: 16px;
+}
+
+/* .timeDivider {
+    width: 180%;
+    height: 2px;
+    margin-top: 20px;
+    background: gray;
+    border-radius: 5px;
+} */
+
+.userCard {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timeInfoWrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+}
+
+.timeInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: gray;
+    flex: 1;
+}
+
+.userType {
+    margin-top: auto;
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+}
+
+
+.userCard:hover .userIcon {
+    color: black;
+}
+
+.userCard:hover .deleteIcon {
+    color: var(--primary-color);
+}
+
+.noResults {
+    grid-column: 1 / -1;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 20px;
+    margin: 40px 0;
+}

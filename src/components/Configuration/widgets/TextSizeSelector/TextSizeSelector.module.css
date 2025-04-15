@@ -1,0 +1,132 @@
+.textSizeSelector {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+}
+
+.textSizeTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.textSizeTitleIcon {
+    font-size: 22px;
+}
+
+.textSizeSubtitle {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 12px;
+}
+
+.textSizeOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.textSizeLabel {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    border: 2px solid lightgray;
+    padding: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+
+}
+
+.textSizeLabel:hover {
+    border-color: var(--primary-color);
+}
+
+.textSizeInput {
+    display: none;
+}
+
+.textSizeContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.textSizeLeft {
+    display: flex;
+    flex-direction: column;
+}
+
+.textSizeText {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 900;
+    color: black;
+}
+
+.textSizeLabelText {
+    display: inline-block;
+}
+
+.textSizeDescription {
+    font-size: 14px;
+    color: gray;
+    margin-top: 3px;
+}
+
+.textSizeToggle {
+    width: 40px;
+    height: 20px;
+    background: lightgray;
+    border-radius: 15px;
+    position: relative;
+    transition: 0.3s;
+}
+
+.toggle {
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.textSizeLabel:has(.textSizeInput:checked) {
+    border-color: var(--primary-color);
+    background: rgba(191, 0, 48, 0.05);
+}
+
+.textSizeLabel:has(.textSizeInput:checked) .textSizeToggle {
+    background: var(--primary-color);
+}
+
+.textSizeLabel:has(.textSizeInput:checked) .toggle {
+    left: 22px;
+}
+
+.textSizeLabel:has(.textSizeInput:checked) .textSizeText {
+    color: var(--primary-color);
+}
+
+@media (max-width: 950px) {
+    .textSizeOptions {
+        grid-template-columns: 1fr;
+    }
+
+    .textSizeLabel {
+        width: 80%;
+        margin: 0 auto;
+        padding: 10px;
+    }
+}

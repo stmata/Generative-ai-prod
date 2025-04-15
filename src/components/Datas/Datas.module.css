@@ -1,0 +1,13 @@
+.containerData {
+    background-color: white;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100vw;
+    min-height: 100vh !important;
+    max-height: 100%;
+}

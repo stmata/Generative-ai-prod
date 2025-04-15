@@ -1,0 +1,159 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+}
+
+.modalContent h2 {
+    color: var(--primary-color);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.checkboxContainer {
+    display: flex;
+    gap: 40px;
+    margin: 20px 0;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.checkboxLabel input {
+    margin-right: 8px;
+}
+
+.formatContainer {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.formatLabel {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.formatOptions {
+    display: flex;
+    gap: 15px;
+}
+
+.formatOption {
+    border: 2px solid transparent;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.formatOption:hover {
+    color: var(--primary-color);
+}
+
+.selectedFormat {
+    color: var(--primary-color);
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.cancelButton,
+.confirmButton {
+    flex: 1;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cancelButton {
+    background: #fff;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.cancelButton:hover {
+    background: var(--primary-color);
+    color: #fff;
+    border: 2px solid var(--primary-color);
+}
+
+.confirmButton {
+    background: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    color: #fff;
+}
+
+.confirmButton:hover {
+    background: #fff;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.confirmButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #ccc;
+    border: none;
+    color: #666;
+}
+
+@media (max-width: 600px) {
+    .modalContent {
+        padding: 20px;
+        max-width: 60%;
+    }
+
+    .checkboxContainer {
+        gap: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .formatOptions {
+        gap: 10px;
+    }
+
+    .buttonContainer {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

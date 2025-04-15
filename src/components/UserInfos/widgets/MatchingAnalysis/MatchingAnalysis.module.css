@@ -1,0 +1,74 @@
+.containerMatching {
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+.h3 {
+    margin-bottom: 1rem;
+    text-align: center;
+    color: var(--primary-color);
+    font-weight: 900;
+    margin-bottom: 2rem;
+
+}
+
+.scoresContainer {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.scoreBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.icon,
+.scoreValue {
+    color: black;
+}
+
+.redColor .icon,
+.redColor .scoreValue {
+    color: var(--primary-color);
+}
+
+.greenColor .icon,
+.greenColor .scoreValue {
+    color: #006d2c;
+}
+
+.icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.scoreValue {
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.scoreLabel {
+    font-size: 1rem;
+    font-weight: 900;
+    color: gray;
+}
+
+.h4 {
+    color: var(--primary-color);
+    font-weight: 900;
+    font-size: 1.4rem;
+}
+
+.pMatching {
+    font-size: 1.1rem;
+    color: black;
+    font-weight: 900;
+}

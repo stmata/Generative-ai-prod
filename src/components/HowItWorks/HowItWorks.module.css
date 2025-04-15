@@ -1,0 +1,116 @@
+.howItWorks {
+    padding: 4rem 2rem;
+    background-color: white;
+    height: 100vh;
+}
+
+.containerHow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 7vh;
+}
+
+.imageContainer {
+    flex: 1;
+}
+
+.workImage {
+    width: 28vw;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.textContainer {
+    flex: 1;
+    text-align: left;
+}
+
+.title {
+    font-size: 4.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-family: var(--font-family-nextgen);
+}
+
+.descriptionHow {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: black;
+    margin-bottom: 1rem;
+    font-weight: bolder;
+}
+
+.list {
+    list-style-type: decimal;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: bolder;
+}
+
+.list li::marker {
+    color: var(--primary-color);
+}
+
+@media (max-width: 800px) {
+    .howItWorks {
+        padding: 2rem 1rem;
+        height: auto;
+    }
+
+    .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .textContainer {
+        order: 1;
+        text-align: center;
+        text-align: left;
+        margin-left: 2vw;
+
+    }
+
+    .imageContainer {
+        order: 2;
+        width: 50%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .workImage {
+        width: 80%;
+        height: auto;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .title {
+        font-size: 3rem;
+        text-align: center;
+        margin-top: 5vh;
+        margin-bottom: 0px;
+    }
+
+    .descriptionHow {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        line-height: 1;
+    }
+
+    .list {
+        font-size: 1rem;
+        margin-left: 0;
+    }
+
+    .list li::marker {
+        color: var(--primary-color);
+    }
+}

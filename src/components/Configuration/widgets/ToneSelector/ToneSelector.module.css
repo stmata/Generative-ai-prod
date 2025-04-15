@@ -1,0 +1,78 @@
+.toneSelector {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    margin-top: 5vh;
+}
+
+.toneTitle {
+    margin-bottom: 8px;
+    color: var(--primary-color);
+}
+
+.toneOptions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.toneLabel {
+    width: 10.5%;
+    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: black;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-weight: 900;
+}
+
+.toneInput {
+    display: none;
+}
+
+.toneLabel:has(.toneInput:checked) {
+    background-color: rgba(191, 0, 48, 0.05);
+    color: var(--primary-color);
+    border-radius: 12px;
+
+    border: 3px solid var(--primary-color);
+}
+
+.toneIcon {
+    font-size: 24px;
+    display: block;
+}
+
+.toneText {
+    font-size: 16px;
+    display: block;
+    margin-top: 5px;
+}
+
+@media screen and (max-width: 1100px) {
+    .toneLabel {
+        width: 25%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .toneLabel {
+        width: 45%;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .toneLabel {
+        width: 80%;
+    }
+}

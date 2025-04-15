@@ -1,0 +1,275 @@
+.container4 {
+  padding-top: 0px !important;
+  margin-bottom: 5vh;
+  background-color: white;
+  width: 100vw;
+  color: black;
+  font-weight: bold;
+  margin-top: 12px;
+  padding-left: 16px;
+}
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+}
+
+.downloadIcon {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--primary-color);
+  margin-left: 1vw;
+}
+
+.inputField {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+  background-color: white;
+  font-size: 1rem;
+  width: 250px;
+  font-weight: bold;
+  margin-left: auto;
+  margin-bottom: 10px;
+}
+
+.inputField:focus-within {
+  border: 2px solid var(--primary-color);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
+}
+
+.inputField input {
+  border: none;
+  outline: none;
+  width: 100%;
+  color: black;
+  background-color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.searchIcon {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: black;
+}
+
+.downloadIcon {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+.table {
+  width: 98vw;
+  padding: 16px;
+  border-collapse: collapse;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  text-align: center;
+}
+
+.table th {
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+.icon {
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.details {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100% !important;
+  background-color: white;
+  text-align: left;
+  padding: 15px 20px;
+  border-top: 2px solid #ddd;
+}
+
+.details h3 {
+  color: var(--primary-color);
+  font-weight: 900;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.details p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+  text-align: start;
+}
+
+.details strong {
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.css-1to7aaw-MuiPagination-root .MuiPaginationItem-root {
+  color: var(--primary-color) !important;
+  font-weight: 900;
+}
+
+.css-1to7aaw-MuiPagination-root .Mui-selected {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+.css-1to7aaw-MuiPagination-root .MuiPaginationItem-root:hover {
+  background-color: rgba(76, 175, 80, 0.2) !important;
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+input[type="checkbox"]:checked {
+  background-color: white;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5.5px;
+  top: 1px;
+  width: 6px;
+  height: 12px;
+  border: solid var(--primary-color);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+@-moz-document url-prefix() {
+  input[type="checkbox"] {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .table thead {
+    display: none;
+  }
+
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 1rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+  }
+
+  .table td {
+    position: relative;
+    padding-left: 50%;
+    text-align: right;
+    border: none;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0.5rem;
+  }
+
+  .table td:last-child {
+    border-bottom: none;
+  }
+
+  .table td:before {
+    position: absolute;
+    left: 10px;
+    width: 40%;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .table td:nth-of-type(1):before {
+    content: "Select";
+  }
+
+  .table td:nth-of-type(2):before {
+    content: "Session ID";
+  }
+
+  .table td:nth-of-type(3):before {
+    content: "Total Messages";
+  }
+
+  .table td:nth-of-type(4):before {
+    content: "Duration (mins)";
+  }
+
+  .table td:nth-of-type(5):before {
+    content: "Date";
+  }
+
+  .table td:nth-of-type(6):before {
+    content: "Returned";
+  }
+
+  .table td:nth-of-type(7):before {
+    content: "Originality";
+  }
+
+  .table td:nth-of-type(8):before {
+    content: "Matching";
+  }
+
+  .table td:nth-of-type(9):before {
+    content: "Voir";
+  }
+
+  .table td:nth-of-type(10):before {
+    content: "Supprimer";
+  }
+
+  .detailsRow {
+    display: block;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+  }
+
+  .detailsRow .details {
+    padding: 0;
+    border: none;
+  }
+}
