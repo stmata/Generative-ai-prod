@@ -8,7 +8,7 @@ const performanceData = {
   datasets: [
     {
       label: 'Performance Metrics',
-      data: [85.50, 92.30, 78.00],
+      data: [95.0, 93.6, 89.2],
       backgroundColor: [
         'grey',
         'black',
@@ -23,7 +23,7 @@ const trainingData = {
   datasets: [
     {
       label: 'Training Data Distribution',
-      data: [40.00, 30.00, 20.00, 10.00],
+      data: [48.0, 27.0, 15.0, 10.0],
       backgroundColor: [
         'grey',
         'black',
