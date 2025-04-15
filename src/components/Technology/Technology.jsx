@@ -37,13 +37,9 @@ const trainingData = {
 const Technology = () => {
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Technology behind GPT-4o-mini</h1>
+      <h1 className={styles.title}>Technology behind GPT-4o</h1>
       <p className={styles.description}>
-        GPT-4o-mini is an experimental language model designed to deliver advanced natural language capabilities
-        within a compact and efficient architecture. It leverages state-of-the-art deep learning techniques to achieve
-        high performance while minimizing computational resources. All data and metrics presented below have been
-        verified from reliable sources.
-      </p>
+GPT-4o is an advanced language model designed to deliver state-of-the-art natural language capabilities with deep contextual understanding and highly fluent text generation. It leverages cutting-edge deep learning techniques to achieve exceptional performance across a wide range of tasks, including writing, translation, coding, and text analysis. Unlike its mini counterpart, GPT-4o features a more expansive architecture, enabling more precise and nuanced responses, albeit with slightly higher computational requirements. All data and metrics presented below have been verified from reliable sources.      </p>
 
       <div className={styles.graphsContainer}>
         <div className={styles.graphSection1}>
