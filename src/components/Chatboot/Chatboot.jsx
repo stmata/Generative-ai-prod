@@ -64,17 +64,7 @@ const Chatboot = () => {
 
     fetchServerConversation();
   }, []);
-  
-useEffect(() => {
-  let sessionId = localStorage.getItem("session_id");
-  if (!sessionId) {
-    sessionId = crypto.randomUUID();
-    localStorage.setItem("session_id", sessionId);
-    console.log("✅ Nouveau session_id créé :", sessionId);
-  } else {
-    console.log("ℹ️ session_id existant :", sessionId);
-  }
-}, []);
+
 
   useEffect(() => {
     // Reset the input when conversation changes
