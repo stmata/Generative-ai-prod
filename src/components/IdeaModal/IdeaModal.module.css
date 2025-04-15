@@ -1,0 +1,108 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modalContent {
+    background: #fff;
+    width: 70vw;
+    height: 66vh;
+    padding: 1rem;
+    border-radius: 15px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: black;
+
+}
+
+.closeButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    color: #555;
+    transition: color 0.2s ease;
+    font-weight: bolder;
+}
+
+.closeButton:hover {
+    color: #bf0030;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 70%;
+    margin: 0.5rem 0;
+    resize: none;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: white;
+    color: black;
+}
+
+.textarea:focus {
+    border: #bf0030 solid 2px;
+    outline: none;
+}
+
+.title {
+    color: #bf0030;
+    margin-top: 30px
+}
+
+.errorMsg {
+    color: #bf0030;
+    margin-bottom: 0.5rem;
+}
+
+.sendButton {
+    background-color: #bf0030;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: bold;
+    font-size: 20px;
+    position: relative;
+}
+
+.sending {
+    color: transparent;
+}
+
+.sending::after {
+    content: "Sending...";
+    color: #bf0030;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sendButton:disabled {
+    background-color: white;
+    cursor: not-allowed;
+    border: #bf0030 2px solid;
+    color: #bf0030;
+}
+
+.sendButton:hover:not(:disabled) {
+    background-color: #a20026;
+}
