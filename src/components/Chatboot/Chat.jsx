@@ -27,36 +27,35 @@ const ChatWidget = ({
   className,
   style,
   onStreamingChange = () => { },
+  sessionId
 }) => {
   const chatContainerRef = useRef(null);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const [sessionExists, setSessionExists] = useState(false);
   const [showIdeaModal, setShowIdeaModal] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
 
   useEffect(() => {
-    const sessionId = localStorage.getItem("session_id");
-    if (sessionId) {
-      setSessionExists(true);
-      const storedHistory = localStorage.getItem(`conversation_${sessionId}`);
-      if (storedHistory) {
-        try {
-          setConversationHistory(JSON.parse(storedHistory));
-        } catch (err) {
-          console.error("Erreur lors du parsing de l'historique:", err);
-        }
+    if (!sessionId) return;
+  
+    const storedHistory = localStorage.getItem(`conversation_${sessionId}`);
+  
+    if (storedHistory) {
+      try {
+        setConversationHistory(JSON.parse(storedHistory));
+      } catch (err) {
+        console.error("Erreur lors du parsing de l'historique:", err);
       }
     }
   }, []);
 
   useEffect(() => {
-    const sessionId = localStorage.getItem("session_id");
     if (sessionId) {
       localStorage.setItem(
         `conversation_${sessionId}`,
         JSON.stringify(conversationHistory)
       );
     }
+    
   }, [conversationHistory]);
 
   useEffect(() => {
@@ -163,16 +162,6 @@ const ChatWidget = ({
   });
   const mergedMessages = mergeMessages(processedMessages, conversationHistory);
 
-  if (!sessionExists) {
-    return (
-      <div className={styles.chatContainer} style={style}>
-        <p style={{ textAlign: "center", padding: "1rem" }}>
-          Aucune session trouvée. Veuillez créer ou démarrer une session avant de discuter.
-        </p>
-      </div>
-    );
-  }
-
   const handleIgotMyIdea = () => {
     setShowIdeaModal(true);
   };
@@ -194,7 +183,7 @@ const ChatWidget = ({
           className={`${styles.chatContainer} ${className}`}
           style={style}
         >
-          {mergedMessages.map((msg, i) => {
+          {mergedMessages.map((msg) => {
             if (msg.role === "user") {
               return (
                 <div key={msg.id} className={styles.clientMessage}>

@@ -8,6 +8,17 @@ import { LuMailWarning } from "react-icons/lu";
 const Chatboot = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [textareaHeight, setTextareaHeight] = useState(0);
+  const [sessionId, setSessionId] = useState(null);
+
+  useEffect(() => {
+    let existingSession = localStorage.getItem("session_id");
+    if (!existingSession) {
+      existingSession = crypto.randomUUID();
+      localStorage.setItem("session_id", existingSession);
+      console.log("✅ session_id généré dans Chatboot:", existingSession);
+    }
+    setSessionId(existingSession);
+  }, []);
 
   const [messageValue, setMessageValue] = useState(null); // pas de valeur initiale
   const MAX_MESSAGES = messageValue ?? 10;
@@ -50,6 +61,7 @@ const Chatboot = () => {
           setActiveConversationId(1);
         }
 
+        // 💡 On applique la valeur du backend
         if (typeof message_value === 'number') {
           setMessageValue(message_value);
         }
@@ -66,6 +78,7 @@ const Chatboot = () => {
 
 
   useEffect(() => {
+    // Reset the input when conversation changes
     setInputValue('');
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
@@ -104,6 +117,7 @@ const Chatboot = () => {
       );
     }
 
+    // After sending a message, clear input and reset height
     setInputValue('');
     setTextareaHeight(0);
     if (inputRef.current) {
@@ -132,7 +146,7 @@ const Chatboot = () => {
     const scrollHeight = e.target.scrollHeight;
     const finalHeight = Math.min(scrollHeight, maxHeight);
     e.target.style.height = `${finalHeight}px`;
-    const offset = window.innerHeight * 0.09; 
+    const offset = window.innerHeight * 0.09; // approx 10% of the window height
     setTextareaHeight(finalHeight - offset);
   };
 
@@ -219,7 +233,9 @@ const Chatboot = () => {
                   messages={activeConversation.messages}
                   className={styles.messages}
                   onStreamingChange={setDisableInput}
+                  sessionId={sessionId}
                 />
+
                 {!hasReachedMaxMessages ? (
                   <div
                     className={styles.inputContainerActive}
