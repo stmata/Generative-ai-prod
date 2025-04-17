@@ -3,21 +3,14 @@ import ChatWidget from './Chat';
 import styles from './Chatboot.module.css';
 import { AiOutlineSend } from 'react-icons/ai';
 import { getConversation } from '../../services/getConversation';
-import { LuMailWarning } from "react-icons/lu";
+import { LuMailWarning } from 'react-icons/lu';
 
 const Chatboot = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [textareaHeight, setTextareaHeight] = useState(0);
+  const [messageValue, setMessageValue] = useState(10);
+  const MAX_MESSAGES = messageValue;
 
-  const [messageValue, setMessageValue] = useState(null); // pas de valeur initiale
-  const MAX_MESSAGES = messageValue ?? 10;
   const [conversations, setConversations] = useState([
-    {
-      id: 1,
-      name: 'New Chat 1',
-      messages: [],
-      date: new Date(),
-    },
+    { id: 1, name: 'New Chat 1', messages: [], date: new Date() }
   ]);
   const [activeConversationId, setActiveConversationId] = useState(1);
 
@@ -26,35 +19,40 @@ const Chatboot = () => {
 
   const [loadingServer, setLoadingServer] = useState(true);
   const [disableInput, setDisableInput] = useState(false);
+  const [textareaHeight, setTextareaHeight] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let sessionId = localStorage.getItem('session_id');
+      if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        localStorage.setItem('session_id', sessionId);
+        console.log(sessionId);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchServerConversation = async () => {
       try {
         const { conversation_history, message_value } = await getConversation();
-
-        if (conversation_history && conversation_history.length > 0) {
-          const transformed = conversation_history.map((msg) => ({
+        if (conversation_history?.length) {
+          const transformed = conversation_history.map(msg => ({
             role: msg.role,
             content: msg.content,
-            date: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+            date: msg.timestamp ? new Date(msg.timestamp) : new Date()
           }));
-
-          setConversations([
-            {
-              id: 1,
-              name: 'Server Chat',
-              messages: transformed,
-              date: new Date(),
-            },
-          ]);
+          setConversations([{
+            id: 1,
+            name: 'Server Chat',
+            messages: transformed,
+            date: new Date()
+          }]);
           setActiveConversationId(1);
         }
-
-        // 💡 On applique la valeur du backend
         if (typeof message_value === 'number') {
           setMessageValue(message_value);
         }
-
       } catch (err) {
         console.error('Error fetching server conversation:', err);
       } finally {
@@ -65,13 +63,9 @@ const Chatboot = () => {
     fetchServerConversation();
   }, []);
 
-
   useEffect(() => {
-    // Reset the input when conversation changes
     setInputValue('');
-    if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
-    }
+    if (inputRef.current) inputRef.current.style.height = 'auto';
   }, [activeConversationId]);
 
   const sendMessage = () => {
@@ -79,193 +73,137 @@ const Chatboot = () => {
 
     const newMessage = {
       role: 'user',
-      content: inputValue,
-      date: new Date(),
+      content: inputValue.trim(),
+      date: new Date()
     };
 
-    if (activeConversationId === null) {
-      const newConv = {
-        id: 1,
-        name: 'conv1',
-        messages: [newMessage],
-        date: new Date(),
-      };
-      setConversations([newConv]);
-      setActiveConversationId(1);
-    } else {
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === activeConversationId
-            ? {
-              ...conv,
-              messages: [...conv.messages, newMessage],
-              date: new Date(),
-            }
-            : conv
-        )
-      );
-    }
-
-    // After sending a message, clear input and reset height
+    setConversations(prev =>
+      prev.map(conv =>
+        conv.id === activeConversationId
+          ? { ...conv, messages: [...conv.messages, newMessage], date: new Date() }
+          : conv
+      )
+    );
     setInputValue('');
     setTextareaHeight(0);
-    if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
-    }
+    if (inputRef.current) inputRef.current.style.height = 'auto';
   };
 
-  const handleInput = (e) => {
-    setInputValue(e.target.value);
-
-    const computedStyles = window.getComputedStyle(e.target);
-    const maxHeight = parseInt(computedStyles.maxHeight.replace("px", ""), 10);
-
-    if (e.target.scrollHeight > maxHeight) {
-      e.target.style.height = `${maxHeight}px`;
-    } else {
-      e.target.style.height = `${e.target.scrollHeight}px`;
-    }
-  };
-
-
-  const handleInput2 = (e) => {
+  const handleInput2 = e => {
     setInputValue(e.target.value);
     e.target.style.height = 'auto';
-    const maxHeight = window.innerHeight * 0.25;
-    const scrollHeight = e.target.scrollHeight;
-    const finalHeight = Math.min(scrollHeight, maxHeight);
-    e.target.style.height = `${finalHeight}px`;
-    const offset = window.innerHeight * 0.09; // approx 10% of the window height
-    setTextareaHeight(finalHeight - offset);
+    const max = window.innerHeight * 0.25;
+    const height = Math.min(e.target.scrollHeight, max);
+    e.target.style.height = `${height}px`;
+    setTextareaHeight(height - window.innerHeight * 0.09);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = e => {
     if (e.key === 'Enter' && !e.shiftKey && !disableInput) {
       e.preventDefault();
       sendMessage();
     }
   };
 
-  const activeConversation = conversations.find((conv) => conv.id === activeConversationId);
-  const isEmptyConversation = activeConversation && activeConversation.messages.length === 0;
+  const activeConversation = conversations.find(c => c.id === activeConversationId);
+  const isEmpty = !activeConversation?.messages.length;
+  const reachedLimit = activeConversation
+    ? activeConversation.messages.filter(m => m.role === 'user').length >= MAX_MESSAGES
+    : false;
 
   if (loadingServer) {
     return (
       <div className={styles.app}>
         <div className={styles.spinnerContainer}>
-          <div className={styles.spinner}></div>
+          <div className={styles.spinner} />
         </div>
       </div>
     );
   }
 
-  const hasReachedMaxMessages = activeConversation
-    ? activeConversation.messages.filter((msg) => msg.role === "user").length >= MAX_MESSAGES
-    : false;
-
-
   return (
     <div className={styles.app}>
-      <div
-        className={styles.mainContent}
-        style={{ marginLeft: sidebarOpen ? '300px' : '0px' }}
-      >
+      <div className={styles.mainContent} style={{ marginLeft: /* your sidebar logic */ }}>
         <div className={styles.conversation} style={{ paddingBottom: textareaHeight }}>
-          {activeConversation ? (
-            isEmptyConversation ? (
-              <div className={styles.emptyConversation}>
-                <h2>How can I help you today?</h2>
-                {!hasReachedMaxMessages ? (
-                  <div className={styles.inputContainerCentered}>
-                    <div
-                      className={styles.textareaContainer}
-                      style={{ position: 'relative', width: '100%' }}
+          {isEmpty ? (
+            <div className={styles.emptyConversation}>
+              <h2>How can I help you today?</h2>
+              {!reachedLimit ? (
+                <div className={styles.inputContainerCentered}>
+                  <div className={styles.textareaContainer}>
+                    <textarea
+                      ref={inputRef}
+                      className={styles.inactiveInput}
+                      placeholder="Send a message..."
+                      value={inputValue}
+                      onChange={handleInput2}
+                      onKeyDown={handleKeyDown}
+                      disabled={disableInput}
+                    />
+                    <button
+                      onClick={sendMessage}
+                      className={
+                        inputValue.trim()
+                          ? `${styles.sendButton2} ${styles.sendButton2Active}`
+                          : styles.sendButton2
+                      }
+                      disabled={disableInput}
                     >
-                      <textarea
-                        ref={inputRef}
-                        className={
-                          activeConversation && activeConversation.messages.length > 0
-                            ? styles.activeInput
-                            : styles.inactiveInput
-                        }
-                        placeholder="Send a message..."
-                        value={inputValue}
-                        onChange={handleInput}
-                        onKeyDown={handleKeyDown}
-                        disabled={disableInput}
-                      />
-                      <button
-                        onClick={sendMessage}
-                        className={
-                          inputValue.trim()
-                            ? `${styles.sendButton2} ${styles.sendButton2Active}`
-                            : styles.sendButton2
-                        }
-                        disabled={disableInput}
-                      >
-                        <AiOutlineSend size={22} />
-                      </button>
-                    </div>
+                      <AiOutlineSend size={22} />
+                    </button>
                   </div>
-                ) : (
-                  <div className={styles.limitReachedAlert}>
-                    <p>
-                      Vous avez atteint la limite de {MAX_MESSAGES} messages pour cette conversation.
-                      Veuillez soumettre votre idée finale.
-                    </p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <ChatWidget
-                  messages={activeConversation.messages}
-                  className={styles.messages}
-                  onStreamingChange={setDisableInput}
-                />
-                {!hasReachedMaxMessages ? (
-                  <div
-                    className={styles.inputContainerActive}
-                    style={{
-                      left: sidebarOpen ? '300px' : '0px',
-                    }}
-                  >
-                    <div className={styles.inputWrapper}>
-                      <textarea
-                        ref={inputRef}
-                        className={styles.activeInput2}
-                        placeholder="Send a message..."
-                        value={inputValue}
-                        onChange={handleInput2}
-                        onKeyDown={handleKeyDown}
-                        disabled={disableInput}
-                      />
-                      <button
-                        onClick={sendMessage}
-                        className={
-                          inputValue.trim()
-                            ? `${styles.sendButton3} ${styles.sendButton3Active}`
-                            : styles.sendButton3
-                        }
-                        disabled={disableInput}
-                      >
-                        <AiOutlineSend size={22} />
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.limitReachedAlert}>
-                    <p>
-                      <LuMailWarning size={"27px"} />
-                      You have reached the limit of {MAX_MESSAGES} messages for this conversation.
-                      Please submit your final idea.
-                    </p>
-                  </div>
-                )}
-              </>
-            )
+                </div>
+              ) : (
+                <div className={styles.limitReachedAlert}>
+                  <p>
+                    Vous avez atteint la limite de {MAX_MESSAGES} messages pour cette conversation.
+                    Veuillez soumettre votre idée finale.
+                  </p>
+                </div>
+              )}
+            </div>
           ) : (
-            <div className={styles.placeholder}></div>
+            <>
+              <ChatWidget
+                messages={activeConversation.messages}
+                className={styles.messages}
+                onStreamingChange={setDisableInput}
+              />
+              {!reachedLimit ? (
+                <div className={styles.inputContainerActive} style={{ /* sidebar offset */ }}>
+                  <div className={styles.inputWrapper}>
+                    <textarea
+                      ref={inputRef}
+                      className={styles.activeInput2}
+                      placeholder="Send a message..."
+                      value={inputValue}
+                      onChange={handleInput2}
+                      onKeyDown={handleKeyDown}
+                      disabled={disableInput}
+                    />
+                    <button
+                      onClick={sendMessage}
+                      className={
+                        inputValue.trim()
+                          ? `${styles.sendButton3} ${styles.sendButton3Active}`
+                          : styles.sendButton3
+                      }
+                      disabled={disableInput}
+                    >
+                      <AiOutlineSend size={22} />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.limitReachedAlert}>
+                  <LuMailWarning size={27} />
+                  <p>
+                    You have reached the limit of {MAX_MESSAGES} messages for this conversation.
+                    Please submit your final idea.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
