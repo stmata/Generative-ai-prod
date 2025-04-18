@@ -328,19 +328,23 @@ const ModalDownload = ({ selectedIds, onClose }) => {
             }
 
             if (includeAnalysis && allAnalysisData.length > 0) {
-                let fileBlob = null;
-                let fileExtension = "pdf";
-                if (analysisFormat === "pdf") {
-                    fileBlob = generateAnalysisPDF(allAnalysisData);
-                } else if (analysisFormat === "excel") {
-                    fileBlob = generateAnalysisExcel(allAnalysisData);
-                    fileExtension = "xlsx";
-                }
-                if (fileBlob) {
-                    zip.folder("analysis").file(`analysis.${fileExtension}`, fileBlob, { binary: true });
+              if (analysisFormat === "pdf") {
+                for (const session of allAnalysisData) {
+                  const pdfBlob = generateAnalysisPDF(session);
+                  if (pdfBlob) {
+                    zip.folder("analysis").file(`analysis-${session.session_id}.pdf`, pdfBlob, { binary: true });
                     hasZipContent = true;
+                  }
                 }
+              } else if (analysisFormat === "excel") {
+                const excelBlob = generateAnalysisExcel(allAnalysisData);
+                if (excelBlob) {
+                  zip.folder("analysis").file(`analysis.xlsx`, excelBlob, { binary: true });
+                  hasZipContent = true;
+                }
+              }
             }
+
 
             if (!hasZipContent) {
                 throw new Error("No valid data to download.");
