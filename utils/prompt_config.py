@@ -29,6 +29,7 @@ def get_chat_prompt(tone, text_size):
     - Ensure that the answer remains factually sound even if no sources can be included.
     - Do not include any generic greetings or introductory messages unrelated to the query.
     - Respond in the same language as the request.
+    - If the response differs from both the user input and the AI’s typical completions—that is, it is not related to either one—consider this completely original from the human.
     """
 
     return system_prompt.strip()
