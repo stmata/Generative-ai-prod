@@ -1,0 +1,83 @@
+.containerStatUser {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.h3 {
+    margin-bottom: 3rem;
+    text-align: center;
+    color: var(--primary-color);
+    font-weight: 900
+}
+
+.chart {
+    flex: 1 1 calc(22vw);
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 52vh;
+}
+
+.chart h3 {
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    padding-top: 5vh;
+    justify-content: center;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.legend_item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.color_box {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+@media (max-width: 1024px) {
+    .chart {
+        flex: 1 1 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 600px) {
+    .chart {
+        flex: 1 1 100%;
+    }
+}
+
+.strongg {
+    color: var(--primary-color);
+
+    font-weight: 900;
+    font-size: 1.22rem;
+}
+
+.msgs,
+.time {
+    text-align: left;
+    color: black;
+    font-weight: 900;
+    font-size: 1.1rem;
+}

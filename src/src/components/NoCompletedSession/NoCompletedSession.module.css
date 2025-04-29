@@ -1,0 +1,30 @@
+.noDataContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: white;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.message {
+    font-size: 3vw;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.subMessage {
+    font-size: 1.4vw;
+    color: #777;
+    font-weight: 900;
+}
+.icon {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}

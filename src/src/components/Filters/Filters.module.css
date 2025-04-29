@@ -1,0 +1,160 @@
+.containerFilters {
+  background: white;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.headerFilters {
+  display: flex;
+  align-items: center;
+}
+
+.titleFilters {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.tabsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  border-bottom: 2px solid #ccc;
+}
+
+.tabs {
+  display: flex;
+  gap: 16px;
+  font-size: 1.2rem;
+}
+
+.tab,
+.activeTab {
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+.activeTab {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+  margin-bottom: -6px;
+}
+
+.tab {
+  color: #777;
+}
+
+.inputField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+  background-color: white;
+  font-size: 1rem;
+  width: 250px;
+  margin-bottom: 10px;
+}
+
+.resetIcon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-left: auto;
+  padding: 0 10px;
+}
+
+
+.inputField:focus-within {
+  border: 2px solid var(--primary-color);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
+}
+
+.inputField input {
+  border: none;
+  outline: none;
+  width: 100%;
+  color: black;
+  background-color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.searchIcon {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-top: 3vh;
+}
+
+.datePicker {
+  height: 100px;
+  width: 100%;
+}
+
+.dropdown {
+  width: 250px;
+  height: 45px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 1000px) {
+  .headerFilters {
+    flex-direction: column;
+  }
+
+  .tabsContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .inputField {
+    width: 70%;
+  }
+
+  .inputField {
+    margin-top: 2vh;
+  }
+
+  .dropdown {
+    width: 29%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .titleFilters {
+    font-size: 1.4rem;
+  }
+
+  .tabs {
+    font-size: 1rem;
+    gap: 8px;
+  }
+
+  .inputField {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+
+  .dropdown {
+    height: 40px;
+  }
+}

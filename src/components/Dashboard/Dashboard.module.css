@@ -1,20 +1,37 @@
 .containerDash {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100vw;
+    width: 100%;
     padding: 16px;
     background-color: white;
     gap: 2vw;
 }
 
+.statsTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 6vh;
+    margin-bottom: -20px;
+    color: gray;
+    text-align: left;
+    align-self: flex-start;
+}
+.diagTitle{
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: -15px;
+    color: gray;
+    text-align: left !important;
+    align-self: flex-start !important;
+}
 .statsContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 1vw;
     width: 100%;
-    margin-top: 6vh;
+    margin-top: 0px;
+    padding-top: 0px;
 }
 
 .statsContainer>div {
@@ -26,6 +43,9 @@
     .statsContainer>div {
         flex: 1 1 calc(25% - 1vw);
     }
+
+    .statsTitle {
+        margin-bottom: 0px;}
 }
 
 @media (max-width: 768px) {
@@ -41,11 +61,11 @@
 }
 
 .diagramsContainer {
-    width: 100vw;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 20px;
+    padding: 0px !important;
     padding-top: 20px;
 }
 
@@ -54,9 +74,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px;
+    height: 100vh; /* plein écran */
+    width: 100vw;
 }
-
 .spinner {
     width: 40px;
     height: 40px;

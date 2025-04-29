@@ -1,0 +1,72 @@
+.containerUserInfos {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    max-width: 100%;
+    min-height: 100vh;
+    height: 100%;
+    overflow: hidden;
+    margin-bottom: 5vh;
+}
+
+.headerUserInfos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.backButton {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.sessionId {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.grid {
+    display: flex;
+    gap: 25px;
+    margin-top: 1rem;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 70%;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 30%;
+}
+
+.leftColumn>div,
+.rightColumn>div {
+    flex-basis: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 8px;
+    height: auto;
+    min-height: 0;
+}
+
+@media screen and (max-width: 1300px) {
+    .grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .leftColumn,
+    .rightColumn {
+        width: 100%;
+    }
+}
