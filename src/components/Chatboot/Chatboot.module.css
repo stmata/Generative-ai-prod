@@ -245,7 +245,7 @@
     z-index: 101;
     background: #fff0f6;
     color: var(--primary-color);
-    font-weight: 600;
+    font-weight: 500;
     font-size: 16px;
     border-radius: 16px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
@@ -316,3 +316,11 @@
         width: 100%;
     }
 }
+
+.inputShiftLeft {
+    left: 5vw !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    width: 60vw !important;
+  }
+  

@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./chat.module.css";
 import { MdOutlineLightbulb } from "react-icons/md";
 import { sendMessageToAI } from "../../services/chat";
-import IdeaModal from "../IdeaModal/IdeaModal";
 import { extractContent } from "../../context/extractContent";
+import { TiWarning } from "react-icons/ti";
+import FinalIdeaForm from "../FinalIdeaForm/FinalIdeaForm";
 
 function mergeMessages(messagesA, messagesB) {
   const all = [...messagesA, ...messagesB];
@@ -27,21 +28,56 @@ const ChatWidget = ({
   className,
   style,
   onStreamingChange = () => { },
-  sessionId
+  sessionId,
+  onWarning = () => { },
+  onIdeaOpen = () => { },
 }) => {
   const chatContainerRef = useRef(null);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [showIdeaModal, setShowIdeaModal] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const spinnerTimerRef = useRef(null);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(window.innerWidth <= 1200);
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobileOrTablet(window.innerWidth <= 1200);
+    };
+  
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  useEffect(() => {
     if (!sessionId) return;
-  
+
     const storedHistory = localStorage.getItem(`conversation_${sessionId}`);
-  
+
     if (storedHistory) {
       try {
-        setConversationHistory(JSON.parse(storedHistory));
+        try {
+          const history = JSON.parse(storedHistory);
+          const filteredHistory = [];
+
+          for (let i = 0; i < history.length; i++) {
+            const current = history[i];
+            const next = history[i + 1];
+
+            if (
+              current.role === "user" &&
+              next &&
+              next.role === "assistant"
+            ) {
+              filteredHistory.push(current, next);
+              i++;
+            }
+          }
+
+          setConversationHistory(filteredHistory);
+        } catch (err) {
+          console.error("Erreur lors du parsing de l'historique:", err);
+        }
+
       } catch (err) {
         console.error("Erreur lors du parsing de l'historique:", err);
       }
@@ -55,7 +91,7 @@ const ChatWidget = ({
         JSON.stringify(conversationHistory)
       );
     }
-    
+
   }, [conversationHistory]);
 
   useEffect(() => {
@@ -69,8 +105,10 @@ const ChatWidget = ({
   }, [isStreaming, onStreamingChange]);
 
   const lastProcessedUserRef = useRef(null);
+
   useEffect(() => {
     if (messages.length === 0) return;
+
     const lastMsg = messages[messages.length - 1];
     if (lastMsg.role !== "user") return;
     if (lastProcessedUserRef.current === lastMsg.id) return;
@@ -94,11 +132,18 @@ const ChatWidget = ({
 
     setConversationHistory((prev) => {
       const alreadyExists = prev.find((m) => m.id === userMsgWithId.id);
-      const newHistory = alreadyExists ? [...prev, assistantPlaceholder] : [...prev, userMsgWithId, assistantPlaceholder];
+      const newHistory = alreadyExists
+        ? [...prev, assistantPlaceholder]
+        : [...prev, userMsgWithId, assistantPlaceholder];
       return [...newHistory];
     });
 
     setIsStreaming(true);
+
+    clearTimeout(spinnerTimerRef.current);
+    spinnerTimerRef.current = setTimeout(() => {
+      setShowSpinner(true);
+    }, 3000);
 
     sendMessageToAI(
       userMsgWithId.content,
@@ -108,6 +153,7 @@ const ChatWidget = ({
           let placeholderIndex = updated.findIndex(
             (m) => m.role === "assistant" && m._streaming
           );
+
           if (placeholderIndex === -1) {
             const newPlaceholder = {
               role: "assistant",
@@ -118,13 +164,13 @@ const ChatWidget = ({
             };
             return [...updated, newPlaceholder];
           }
+
           updated[placeholderIndex] = {
             ...updated[placeholderIndex],
             content: partialAnswer,
           };
           return updated;
         });
-
       },
       updatedConversation
     )
@@ -135,6 +181,7 @@ const ChatWidget = ({
             (m) => m.role === "assistant" && m._streaming
           );
           if (placeholderIndex === -1) return updated;
+
           updated[placeholderIndex] = {
             role: "assistant",
             content: finalAnswer,
@@ -147,9 +194,25 @@ const ChatWidget = ({
       })
       .catch((err) => {
         console.error("Erreur lors du streaming:", err);
+
+        onWarning(); setConversationHistory((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: (
+              <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <TiWarning className={styles.warningIcon} />
+                Oups, une erreur est survenue. Essaie plus tard (problème serveur ou connexion).
+              </span>), id: crypto.randomUUID(),
+            date: new Date(),
+            isWarning: true,
+          },
+        ]);
       })
       .finally(() => {
         setIsStreaming(false);
+        setShowSpinner(false);
+        clearTimeout(spinnerTimerRef.current);
       });
   }, [messages]);
 
@@ -164,44 +227,48 @@ const ChatWidget = ({
 
   const handleIgotMyIdea = () => {
     setShowIdeaModal(true);
+    onIdeaOpen(true);
   };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.headerRight}>
-        <button className={styles.shareButton} onClick={handleIgotMyIdea}>
-          <MdOutlineLightbulb
-            className={styles.shareIcon}
-            style={{ marginRight: "13px" }}
-            size={35}
-          />
-        </button>
+        {!showIdeaModal && (
+          <button className={styles.submitButton} onClick={handleIgotMyIdea}>
+            <MdOutlineLightbulb className={styles.submitIcon} size={22} />
+            <span className={styles.submitLabel}>Submit Final Idea</span>
+          </button>
+        )}
       </div>
-      <div className={styles.centeredCont}>
-        <div
-          ref={chatContainerRef}
-          className={`${styles.chatContainer} ${className}`}
-          style={style}
-        >
-          {mergedMessages.map((msg) => {
-            if (msg.role === "user") {
-              return (
-                <div key={msg.id} className={styles.clientMessage}>
-                  <p style={{ whiteSpace: "pre-line" }}>{msg.content}</p>
-                </div>
-              );
-            }
-            else if (msg.role === "assistant") {
-              if (msg._streaming) {
+
+
+      <div className={styles.layout}>
+        <div className={`${styles.centeredCont} ${showIdeaModal ? styles.shiftedLeft : styles.centered}`}>
+          <div
+            ref={chatContainerRef}
+            className={`${styles.chatContainer} ${className} ${showIdeaModal ? styles.chatWithPadding : ""}`}
+            style={style}
+          >
+            {mergedMessages.map((msg) => {
+              if (msg.role === "user") {
                 return (
-                  <div key={msg.id} className={styles.machineResponse}>
+                  <div key={msg.id} className={styles.clientMessage}>
                     <p style={{ whiteSpace: "pre-line" }}>{msg.content}</p>
                   </div>
                 );
-              } else {
-                return (
-                  <div key={msg.id} className={styles.machineResponse}>
-                    <p style={{ whiteSpace: "pre-line" }}>{msg.content}</p>
+              } else if (msg.role === "assistant") {
+                const content = (
+                  <div
+                    key={msg.id}
+                    className={
+                      msg.isWarning ? styles.warningMessage : styles.machineResponse
+                    }
+                  >
+                    {typeof msg.content === "string" ? (
+                      <p style={{ whiteSpace: "pre-line" }}>{msg.content}</p>
+                    ) : (
+                      msg.content
+                    )}
                     {msg.sources && msg.sources.trim() !== "" && (
                       <p
                         style={{
@@ -218,12 +285,38 @@ const ChatWidget = ({
                     )}
                   </div>
                 );
+
+                return msg._streaming ? (
+                  <div key={msg.id} className={styles.machineResponse}>
+                    <p style={{ whiteSpace: "pre-line" }}>{msg.content}</p>
+                  </div>
+                ) : content;
               }
-            }
-            return null;
-          })}
-          {showIdeaModal && <IdeaModal onClose={() => setShowIdeaModal(false)} />}
+
+              return null;
+            })}
+          </div>
         </div>
+
+        {showIdeaModal && (
+          isMobileOrTablet ? (
+            <div className={styles.fullscreenOverlay}>
+              <FinalIdeaForm onClose={() => {
+                setShowIdeaModal(false);
+                onIdeaOpen(false);
+              }} />
+            </div>
+          ) : (
+            <div className={styles.rightPanel}>
+              <FinalIdeaForm onClose={() => {
+                setShowIdeaModal(false);
+                onIdeaOpen(false);
+              }} />
+            </div>
+          )
+        )}
+
+
       </div>
     </div>
   );

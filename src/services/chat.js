@@ -1,5 +1,5 @@
 import { extractContent } from "../context/extractContent";
-const baseUrl = window._env_?.VITE_APP_BASE_URL || import.meta.env.VITE_APP_BASE_URL;
+const baseUrl = import.meta.env.VITE_APP_BASE_URL
 
 export const sendMessageToAI = async (message, onStream, history = []) => {
   const sessionId = localStorage.getItem("session_id") || "";

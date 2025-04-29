@@ -22,7 +22,7 @@
 .line {
     width: 10vw;
     height: 5px;
-    background-color: var(--primary-color);
+    background-color: #000;
     margin: 0 auto 10px;
     margin-bottom: 5vh;
 }
@@ -42,21 +42,26 @@
 }
 
 .button {
-    background-color: var(--primary-color);
+    background-color: #000;
     color: white;
     font-size: 18px;
     padding: 12px 24px;
-    border: 2px solid var(--primary-color);
+    border: 2px solid #000;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     font-weight: 900;
+    outline: none;
+
 }
 
-.button:hover {
+.button:hover,
+.button:active,button:focus {
     background-color: white;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    color: #000;
+    border: 2px solid #000;
+    outline: none;
+
 }
 
 @media screen and (max-width: 1024px) {

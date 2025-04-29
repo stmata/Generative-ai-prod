@@ -9,18 +9,20 @@ const Chatboot = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [textareaHeight, setTextareaHeight] = useState(0);
   const [sessionId, setSessionId] = useState(null);
+  const [hasError, setHasError] = useState(false);
+  const [isFinalIdeaOpen, setIsFinalIdeaOpen] = useState(false);
+
 
   useEffect(() => {
     let existingSession = localStorage.getItem("session_id");
     if (!existingSession) {
       existingSession = crypto.randomUUID();
       localStorage.setItem("session_id", existingSession);
-      console.log("✅ session_id généré dans Chatboot:", existingSession);
     }
     setSessionId(existingSession);
   }, []);
 
-  const [messageValue, setMessageValue] = useState(null); // pas de valeur initiale
+  const [messageValue, setMessageValue] = useState(null);
   const MAX_MESSAGES = messageValue ?? 10;
   const [conversations, setConversations] = useState([
     {
@@ -61,7 +63,6 @@ const Chatboot = () => {
           setActiveConversationId(1);
         }
 
-        // 💡 On applique la valeur du backend
         if (typeof message_value === 'number') {
           setMessageValue(message_value);
         }
@@ -78,7 +79,6 @@ const Chatboot = () => {
 
 
   useEffect(() => {
-    // Reset the input when conversation changes
     setInputValue('');
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
@@ -117,7 +117,6 @@ const Chatboot = () => {
       );
     }
 
-    // After sending a message, clear input and reset height
     setInputValue('');
     setTextareaHeight(0);
     if (inputRef.current) {
@@ -146,7 +145,7 @@ const Chatboot = () => {
     const scrollHeight = e.target.scrollHeight;
     const finalHeight = Math.min(scrollHeight, maxHeight);
     e.target.style.height = `${finalHeight}px`;
-    const offset = window.innerHeight * 0.09; // approx 10% of the window height
+    const offset = window.innerHeight * 0.09;
     setTextareaHeight(finalHeight - offset);
   };
 
@@ -186,7 +185,7 @@ const Chatboot = () => {
             isEmptyConversation ? (
               <div className={styles.emptyConversation}>
                 <h2>How can I help you today?</h2>
-                {!hasReachedMaxMessages ? (
+                {!hasReachedMaxMessages && !hasError && (
                   <div className={styles.inputContainerCentered}>
                     <div
                       className={styles.textareaContainer}
@@ -218,11 +217,12 @@ const Chatboot = () => {
                       </button>
                     </div>
                   </div>
-                ) : (
+                )} {hasReachedMaxMessages && !hasError && (
                   <div className={styles.limitReachedAlert}>
                     <p>
-                      Vous avez atteint la limite de {MAX_MESSAGES} messages pour cette conversation.
-                      Veuillez soumettre votre idée finale.
+                      <LuMailWarning size={"27px"} />
+                      You have reached the limit of {MAX_MESSAGES} messages for this conversation.
+                      Please submit your final idea.
                     </p>
                   </div>
                 )}
@@ -234,15 +234,18 @@ const Chatboot = () => {
                   className={styles.messages}
                   onStreamingChange={setDisableInput}
                   sessionId={sessionId}
+                  onWarning={() => setHasError(true)}
+                  onIdeaOpen={setIsFinalIdeaOpen}
                 />
 
-                {!hasReachedMaxMessages ? (
+                {!hasReachedMaxMessages && !hasError && (
                   <div
-                    className={styles.inputContainerActive}
-                    style={{
-                      left: sidebarOpen ? '300px' : '0px',
-                    }}
-                  >
+                  className={`${styles.inputContainerActive} ${isFinalIdeaOpen ? styles.inputShiftLeft : ''}`}
+                  style={{
+                    left: sidebarOpen ? '300px' : '0px',
+                  }}
+                >
+                
                     <div className={styles.inputWrapper}>
                       <textarea
                         ref={inputRef}
@@ -266,7 +269,7 @@ const Chatboot = () => {
                       </button>
                     </div>
                   </div>
-                ) : (
+                )} {hasReachedMaxMessages && !hasError && (
                   <div className={styles.limitReachedAlert}>
                     <p>
                       <LuMailWarning size={"27px"} />
