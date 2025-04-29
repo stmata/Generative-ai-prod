@@ -1,4 +1,4 @@
-export const API_BASE_URL = import.meta.env.VITE_APP_BASE_URL;
+const API_BASE_URL = window._env_?.VITE_APP_BASE_URL || import.meta.env.VITE_APP_BASE_URL;
 
 export const downloadChatsService = async (payload) => {
   try {
