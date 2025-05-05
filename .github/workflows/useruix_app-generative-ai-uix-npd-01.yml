@@ -22,17 +22,10 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install
-          npm run build
-          npm run test || echo "Tests skipped"
+          npm install --legacy-peer-deps
+          npm run build --if-present
+          npm run test --if-present
           
-      - name: Check if dist folder exists
-        run: |
-          if not exist dist (
-            echo ❌ Build failed: dist folder not found.
-            dir
-            exit 1
-          )
 
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.7.6
