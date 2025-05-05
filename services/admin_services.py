@@ -200,7 +200,7 @@ async def fetch_all_users():
         "matching_score": 1,
         "matching_analysis": 1
     }))
-    chat_sessions = list(chat_collection.find({"final_idea": {"$exists": False}}, {"_id": 0, "session_id": 1}))
+    chat_sessions = list(chat_collection.find({"final_idea": {"$exists": False}}, {"_id": 0, "session_id": 1,"conversation_history": 1,}))
     all_sessions = analysis_data + chat_sessions  
     
     return all_sessions
