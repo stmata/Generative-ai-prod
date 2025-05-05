@@ -16,7 +16,6 @@ const ProtectedRoutes = () => {
       <Route path="/" element={<Chatboot />} />
       <Route path="/ThankYou" element={<ThankYou />} />
 
-      {/* Catch-all for 404 */}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

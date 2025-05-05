@@ -19,19 +19,20 @@
     cursor: pointer;
     color: #000;
     outline: none;
-  }
-  
-  .closeBtn:focus,
-  .closeBtn:active {
+}
+
+.closeBtn:focus,
+.closeBtn:active {
     outline: none;
     border: none;
     box-shadow: none;
-  }
+}
 
 .title {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 16px;
+    color: #000;
 }
 
 .textarea {
@@ -49,7 +50,7 @@
     font-size: 16px;
     margin-left: 24px;
     margin-right: 24px;
-
+    color: #000;
 }
 
 .textarea:focus {

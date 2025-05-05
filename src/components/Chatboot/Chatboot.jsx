@@ -45,24 +45,24 @@ const Chatboot = () => {
       try {
         const { conversation_history, message_value } = await getConversation();
 
+        let messages = [];
         if (conversation_history && conversation_history.length > 0) {
-          const transformed = conversation_history.map((msg) => ({
+          messages = conversation_history.map((msg) => ({
             role: msg.role,
             content: msg.content,
             date: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+            id: msg.id || crypto.randomUUID(),
           }));
-
-          setConversations([
-            {
-              id: 1,
-              name: 'Server Chat',
-              messages: transformed,
-              date: new Date(),
-            },
-          ]);
-          setActiveConversationId(1);
         }
-
+        setConversations([
+          {
+            id: 1,
+            name: 'Server Chat',
+            messages: messages,
+            date: new Date(),
+          },
+        ]);
+        setActiveConversationId(1);
         if (typeof message_value === 'number') {
           setMessageValue(message_value);
         }
@@ -77,7 +77,6 @@ const Chatboot = () => {
     fetchServerConversation();
   }, []);
 
-
   useEffect(() => {
     setInputValue('');
     if (inputRef.current) {
@@ -89,6 +88,7 @@ const Chatboot = () => {
     if (!inputValue.trim() || disableInput) return;
 
     const newMessage = {
+      id: crypto.randomUUID(),
       role: 'user',
       content: inputValue,
       date: new Date(),
@@ -240,12 +240,12 @@ const Chatboot = () => {
 
                 {!hasReachedMaxMessages && !hasError && (
                   <div
-                  className={`${styles.inputContainerActive} ${isFinalIdeaOpen ? styles.inputShiftLeft : ''}`}
-                  style={{
-                    left: sidebarOpen ? '300px' : '0px',
-                  }}
-                >
-                
+                    className={`${styles.inputContainerActive} ${isFinalIdeaOpen ? styles.inputShiftLeft : ''}`}
+                    style={{
+                      left: sidebarOpen ? '300px' : '0px',
+                    }}
+                  >
+
                     <div className={styles.inputWrapper}>
                       <textarea
                         ref={inputRef}

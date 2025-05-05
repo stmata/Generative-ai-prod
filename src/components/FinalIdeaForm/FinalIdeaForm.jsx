@@ -58,7 +58,7 @@ const FinalIdeaForm = ({ onClose }) => {
                 &times;
             </button>
 
-            <h2 className={styles.title}>Submit your final idea :</h2>
+            <h2 className={styles.title}>Please enter your response here :</h2>
 
             <textarea
                 value={idea}
@@ -75,7 +75,7 @@ const FinalIdeaForm = ({ onClose }) => {
                 disabled={isSending || !idea.trim()}
                 className={styles.submitButton}
             >
-                {isSending ? "Sending..." : "Let’s go!"}
+                {isSending ? "Sending..." : "Submit!"}
                 {!isSending && <FiSend className={styles.icon} />}
             </button>
         </div>

@@ -3,9 +3,10 @@
 
 @font-face {
   font-family: 'Nextgen';
-  src: url('fonts/Nextgen.otf') format('opentype'); 
+  src: url('fonts/Nextgen.otf') format('opentype');
   font-weight: normal;
-  font-style: normal;}
+  font-style: normal;
+}
 
 :root {
 
@@ -81,7 +82,9 @@
   box-sizing: border-box;
   font-family: inherit;
 }
-html, body {
+
+html,
+body {
   overflow-x: hidden;
 }
 
@@ -116,8 +119,8 @@ ul {
 .theme-toggle-btn {
   background-color: var(--bg-color-inverted);
   position: fixed;
-  right: 20px; 
-  bottom: 20px; 
+  right: 20px;
+  bottom: 20px;
   width: 48px;
   height: 40px;
   border-top-left-radius: 30px;
@@ -168,8 +171,9 @@ ul {
 }
 
 .content-area {
-  & > section {
+  &>section {
     margin-bottom: 16px;
+
     &:last-child {
       margin-bottom: 0;
     }

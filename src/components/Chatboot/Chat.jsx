@@ -44,45 +44,45 @@ const ChatWidget = ({
     const handleResize = () => {
       setIsMobileOrTablet(window.innerWidth <= 1200);
     };
-  
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  useEffect(() => {
-    if (!sessionId) return;
+  // useEffect(() => {
+  //   if (!sessionId) return;
 
-    const storedHistory = localStorage.getItem(`conversation_${sessionId}`);
+  //   const storedHistory = localStorage.getItem(`conversation_${sessionId}`);
 
-    if (storedHistory) {
-      try {
-        try {
-          const history = JSON.parse(storedHistory);
-          const filteredHistory = [];
+  //   if (storedHistory) {
+  //     try {
+  //       try {
+  //         const history = JSON.parse(storedHistory);
+  //         const filteredHistory = [];
 
-          for (let i = 0; i < history.length; i++) {
-            const current = history[i];
-            const next = history[i + 1];
+  //         for (let i = 0; i < history.length; i++) {
+  //           const current = history[i];
+  //           const next = history[i + 1];
 
-            if (
-              current.role === "user" &&
-              next &&
-              next.role === "assistant"
-            ) {
-              filteredHistory.push(current, next);
-              i++;
-            }
-          }
+  //           if (
+  //             current.role === "user" &&
+  //             next &&
+  //             next.role === "assistant"
+  //           ) {
+  //             filteredHistory.push(current, next);
+  //             i++;
+  //           }
+  //         }
 
-          setConversationHistory(filteredHistory);
-        } catch (err) {
-          console.error("Erreur lors du parsing de l'historique:", err);
-        }
+  //         setConversationHistory(filteredHistory);
+  //       } catch (err) {
+  //         console.error("Erreur lors du parsing de l'historique:", err);
+  //       }
 
-      } catch (err) {
-        console.error("Erreur lors du parsing de l'historique:", err);
-      }
-    }
-  }, []);
+  //     } catch (err) {
+  //       console.error("Erreur lors du parsing de l'historique:", err);
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (sessionId) {
@@ -223,7 +223,10 @@ const ChatWidget = ({
     }
     return msg;
   });
-  const mergedMessages = mergeMessages(processedMessages, conversationHistory);
+  // const mergedMessages = mergeMessages(processedMessages, conversationHistory);
+  const mergedMessages = conversationHistory.length > 0
+    ? mergeMessages(processedMessages, conversationHistory)
+    : processedMessages;
 
   const handleIgotMyIdea = () => {
     setShowIdeaModal(true);
@@ -236,7 +239,7 @@ const ChatWidget = ({
         {!showIdeaModal && (
           <button className={styles.submitButton} onClick={handleIgotMyIdea}>
             <MdOutlineLightbulb className={styles.submitIcon} size={22} />
-            <span className={styles.submitLabel}>Submit Final Idea</span>
+            <span className={styles.submitLabel}>Submit</span>
           </button>
         )}
       </div>
