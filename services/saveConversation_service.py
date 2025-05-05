@@ -38,7 +38,6 @@ async def save_conversation(session_id: str, conversation_history: list):
         doc = collection.find_one({"session_id": session_id})
         existing_history = doc.get("conversation_history", []) if doc else []
 
-        # Éviter les doublons exacts (par exemple, basé sur 'role' + 'content' + 'timestamp')
         existing_set = {f"{m['role']}|{m['content']}|{m['timestamp']}" for m in existing_history}
         new_filtered = [
             m for m in conversation_history

@@ -38,9 +38,11 @@ async def analyze_session(payload: AnalyzePayload):
         "matching_analysis": matching_analysis,
         "created_at": datetime.utcnow().isoformat(),
     }
+    print(analysis_result)
 
     try:
         inserted_doc = db["analyses"].insert_one(analysis_result)
         return inserted_doc.acknowledged  
     except Exception as e:
         return False 
+    

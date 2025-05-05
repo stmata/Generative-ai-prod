@@ -3,7 +3,7 @@ from openai import AzureOpenAI
 import os
 from dotenv import load_dotenv
 from typing import List, Optional, Dict, Any
-from utils.cache_config import config_cache
+from utils import cache_config
 from utils.prompt_config import get_keyword_extraction_prompt
 from models.models import ConfigModel
 
@@ -160,8 +160,17 @@ def get_analysis_data(start_date=None, end_date=None):
         query["created_at"] = {"$gte": start_date, "$lte": end_date}
 
     analysis_data = list(analysis_collection.find(query, {
-        "_id": 0, "session_id": 1, "time_stats.total_messages": 1, "time_stats.total_duration_minutes": 1,
-        "created_at": 1, "time_stats.user_returned_after_30mins": 1, "originality_score": 1, "matching_score": 1, "assistant_influence_score":1, "matching_analysis": 1
+        "_id": 0,
+        "session_id": 1, 
+        "time_stats.total_messages": 1, 
+        "time_stats.total_duration_minutes": 1,
+        "created_at": 1, 
+        "time_stats.user_returned_after_30mins": 1,        
+        "time_stats.avg_ai_latency_seconds": 1,
+        "originality_score": 1, 
+        "matching_score": 1, 
+        "assistant_influence_score":1, 
+        "matching_analysis": 1
     }))
 
     return analysis_data
@@ -236,7 +245,6 @@ async def update_config(config_data: ConfigModel):
     """
     Update or insert a new configuration in the database.
     """
-    global config_cache 
     if config_collection is None:
         raise ValueError("Database collection is not initialized")
     existing_config = await get_config() 
@@ -244,9 +252,9 @@ async def update_config(config_data: ConfigModel):
         config_collection.update_one({}, {"$set": config_data.dict()})
     else:
         await config_collection.insert_one(config_data.dict())
-    config_cache = await get_config()
-    print(config_cache)
-    return config_cache 
+    fresh = await get_config()
+    cache_config.config_cache = fresh
+    return fresh
 
 async def get_chats(ids: List[str]) -> List[dict]:
     chats = []

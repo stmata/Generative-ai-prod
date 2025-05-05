@@ -8,18 +8,22 @@ from services.chat_service import get_buffer_for_session, wrapped_client
 from services.saveConversation_service import save_conversation, load_conversation 
 from utils.prompt_config import get_chat_prompt
 from services.mongodb_connection import MongoDBManager
-from utils.cache_config import config_cache
+from services.admin_services import get_config 
+from utils import cache_config
 
 CANADA_TZ = ZoneInfo("America/Toronto")
 db_manager = MongoDBManager()
 
-if config_cache is None:  
-    config_collection = db_manager.get_collection("config")
-    config_cache = config_collection.find_one({})
-tone = config_cache.get("tone", "Neutral")
-text_size = config_cache.get("textSize", "Medium")
+# if global_config is None:
+#     config_collection = db_manager.get_collection("config")
+#     global_config = config_collection.find_one({})
 
-SYSTEM_INSTRUCTIONS = get_chat_prompt(tone, text_size)
+# tone = global_config.get("tone", "Neutral")
+# text_size = global_config.get("textSize", "Medium")
+
+# print(tone)
+# SYSTEM_INSTRUCTIONS = get_chat_prompt(tone, text_size)
+# print(tone)
 
 # SYSTEM_INSTRUCTIONS = """
 # You are an advanced AI assistant specialized in delivering detailed, precise, and fact-based responses. Your objective is to provide a comprehensive, thoroughly verified answer to the user's query by cross-referencing multiple reliable sources before finalizing your response. 
@@ -39,8 +43,20 @@ SYSTEM_INSTRUCTIONS = get_chat_prompt(tone, text_size)
 # - Include every source you referenced in your research in your final answer.
 # """
 
-
 async def process_chat_stream(message: str, session_id: str, conversation_history: list) -> StreamingResponse:
+    if cache_config.config_cache is None:
+        cache_config.config_cache = await get_config()
+    genderTone = cache_config.config_cache.get("genderTone")
+    tone = cache_config.config_cache.get("tone")
+    intervalValue = cache_config.config_cache.get("intervalValue")
+
+    print(intervalValue)
+    text_size = cache_config.config_cache.get("textSize")
+
+    SYSTEM_INSTRUCTIONS = get_chat_prompt(tone, genderTone, text_size,intervalValue)
+    print("SYSTEM_INSTRUCTIONS recalculé :", tone, genderTone, text_size, intervalValue)
+    print(SYSTEM_INSTRUCTIONS)
+
     if not conversation_history:
         conversation_history = await load_conversation(session_id)
 

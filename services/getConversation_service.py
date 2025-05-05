@@ -9,7 +9,7 @@ config_collection = db_manager.get_collection("config")
 async def get_conversation(session_id: str) -> list:
     config_doc = config_collection.find_one()
     
-    nbreMessage = 15  # default
+    nbreMessage = 15 
     if config_doc and "messageValue" in config_doc:
         nbreMessage = config_doc["messageValue"]
     print(nbreMessage)

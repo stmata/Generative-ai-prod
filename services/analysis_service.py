@@ -16,45 +16,61 @@ try:
 except Exception as e:
     raise RuntimeError(f"Erreur lors de l'initialisation du client Azure OpenAI : {e}")
 
+from datetime import datetime
+
 def compute_time_stats(conversation_history):
     """
-    Calcule :
-      - le nombre total de messages,
-      - la durée totale active de la conversation (exclut les longues pauses),
-      - le nombre de fois où l'utilisateur est revenu après plus de 30 minutes.
+    Calcule, à partir d'une liste de messages dotés de 'role' et 'timestamp' ISO 8601 :
+      - total_messages                  : nombre total de messages
+      - total_duration_minutes         : somme des écarts (en minutes) entre messages < 30 min
+      - num_gaps_over_30mins           : nombre de pauses > 30 min
+      - user_returned_after_30mins     : True si au moins une pause > 30 min
+      - avg_ai_latency_seconds         : latence moyenne IA (sec) user→assistant
     """
     if not conversation_history:
         return {
             "total_messages": 0,
-            "total_duration_minutes": 0,
+            "total_duration_minutes": 0.0,
+            "num_gaps_over_30mins": 0,
             "user_returned_after_30mins": False,
-            "num_gaps_over_30mins": 0
+            "avg_ai_latency_seconds": 0.0
         }
 
-    conversation_history_sorted = sorted(conversation_history, key=lambda x: x["timestamp"])
+    sorted_msgs = sorted(conversation_history, key=lambda m: m["timestamp"])
+    times = []
+    roles = []
+    for msg in sorted_msgs:
+        ts = msg["timestamp"]
+        if ts.endswith("Z"):
+            ts = ts[:-1] + "+00:00"
+        times.append(datetime.fromisoformat(ts))
+        roles.append(msg["role"])
 
-    times = [datetime.fromisoformat(msg["timestamp"].replace("Z", "")) for msg in conversation_history_sorted]
+    total_messages = len(times)
+    num_gaps = 0
+    total_active = 0.0
+    latencies = []
 
-    total_messages = len(conversation_history_sorted)
-    num_gaps_over_30mins = 0
-    total_active_time = 0  
+    for prev_idx, curr_idx in zip(range(len(times)-1), range(1, len(times))):
+        dt = times[curr_idx] - times[prev_idx]
+        diff_min = dt.total_seconds() / 60.0
 
-    for i in range(1, len(times)):
-        diff = times[i] - times[i - 1]
-        diff_minutes = diff.total_seconds() / 60.0
-
-        if diff_minutes > 30:
-            num_gaps_over_30mins += 1
+        if diff_min > 30:
+            num_gaps += 1
         else:
-            total_active_time += diff_minutes  
+            total_active += diff_min
 
-    user_returned_after_30mins = num_gaps_over_30mins > 0 
+        if roles[prev_idx] == "user" and roles[curr_idx] == "assistant":
+            latencies.append(dt.total_seconds())
+
+    avg_latency = round(sum(latencies) / len(latencies), 2) if latencies else 0.0
 
     return {
         "total_messages": total_messages,
-        "total_duration_minutes": round(total_active_time, 2),  
-        "user_returned_after_30mins": user_returned_after_30mins,
-        "num_gaps_over_30mins": num_gaps_over_30mins
+        "total_duration_minutes": round(total_active, 2),
+        "num_gaps_over_30mins": num_gaps,
+        "user_returned_after_30mins": num_gaps > 0,
+        "avg_ai_latency_seconds": avg_latency
     }
 
 def compute_size_stats(conversation_history):

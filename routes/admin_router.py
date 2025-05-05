@@ -21,6 +21,7 @@ async def fetch_analysis(start_date: str = None, end_date: str = None):
     """
     start_dt = datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
     end_dt = datetime.strptime(end_date, "%Y-%m-%d") if end_date else None
+    print(get_analysis_data(start_dt, end_dt))
     return get_analysis_data(start_dt, end_dt)
 
 @router.delete("/analysis/{session_id}")
