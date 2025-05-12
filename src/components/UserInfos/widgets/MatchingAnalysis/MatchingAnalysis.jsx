@@ -36,7 +36,7 @@ const MatchingAnalysis = ({ originalityScore, conv, matchingScore, matchingAnaly
           <p className={styles.scoreValue} style={{ color: getGreenGradient(originalityScore) }}>
             {originalityScore}%
           </p>
-          <p className={styles.scoreLabel}>Human Creativity</p>
+          <p className={styles.scoreLabel}>Human Influence Score</p>
         </div>
 
         <div className={styles.scoreBox}>
@@ -44,7 +44,7 @@ const MatchingAnalysis = ({ originalityScore, conv, matchingScore, matchingAnaly
           <p className={styles.scoreValue} style={{ color: getRedGradient(matchingScore) }}>
             {matchingScore}%
           </p>
-          <p className={styles.scoreLabel}>AI Score</p>
+          <p className={styles.scoreLabel}>AI Influence Score</p>
         </div>
 
         <div className={styles.scoreBox}>
@@ -52,7 +52,7 @@ const MatchingAnalysis = ({ originalityScore, conv, matchingScore, matchingAnaly
           <p className={styles.scoreValueConv} style={{ color: getBlueColor(conv) }}>
             {conv}%
           </p>
-          <p className={styles.scoreLabel}>Conversation</p>
+          <p className={styles.scoreLabel}>Interaction Influence Score</p>
         </div>
 
 

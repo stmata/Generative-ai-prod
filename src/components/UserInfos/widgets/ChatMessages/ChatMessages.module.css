@@ -25,7 +25,6 @@
 .actionItem {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
     padding: 0.6rem 0;
     width: 100%;
     color: black;
@@ -34,6 +33,7 @@
     cursor: pointer;
     transition: color 0.3s ease-in-out;
     text-align: center;
+
 }
 
 .actionItem:hover {
@@ -44,6 +44,9 @@
     font-size: 1.2rem;
     color: var(--primary-color);
     width: 24px;
+    margin-right: 5px;
+    margin-left: 6px;
+
 }
 
 .deleteAction {
@@ -51,5 +54,121 @@
 }
 
 .deleteAction:hover {
+    color: var(--primary-color);
+}
+
+
+.customActionSelect {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    padding: 0.6rem 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+    transition: color 0.3s ease-in-out;
+}
+
+.customActionSelect:hover {
+    color: var(--primary-color);
+}
+
+.optionsListAction {
+    margin-top: 0.5rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    z-index: 10;
+    position: absolute;
+}
+
+.optionItemAction {
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.optionItemAction:hover {
+    background-color: rgba(191, 0, 48, 0.05);
+}
+
+
+
+
+
+
+.actionItem {
+    position: relative;
+    display: flex;
+    align-items: center;      
+    justify-content: flex-start;
+    height: 48px;          
+    width: 100%;
+    padding: 0 10px;
+    gap: 8px;         
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+  }
+
+.customActionSelect {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+    transition: color 0.3s ease-in-out;
+    margin-top: -10px !important;
+    gap: 0px !important;
+}
+
+.customActionSelect:hover {
+    color: var(--primary-color);
+}
+
+.optionsListAction {
+    position: absolute;
+    top: -155%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    z-index: 1000;
+    color: black;
+}
+
+
+.optionItemAction {
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    color: black !important;
+    background-color: white;
+
+}
+
+.optionItemAction:hover {
+    background-color: rgba(191, 0, 48, 0.05);
+    color: var(--primary-color) !important;
+}
+
+.spanButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spanButton svg {
     color: var(--primary-color);
 }

@@ -1,0 +1,85 @@
+.genderSelector {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    margin-top: 5vh;
+}
+
+.genderTitle {
+    margin-bottom: 8px;
+    color: var(--primary-color);
+}
+
+.genderSubtitle {
+    color: gray;
+}
+
+.genderOptions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.genderLabel {
+    width: 12.5%;
+    height: 15vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: black;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-weight: 900;
+}
+
+.genderLabel:hover {
+    border-color: var(--primary-color);
+}
+
+.genderInput {
+    display: none;
+}
+
+.genderLabel:has(.genderInput:checked) {
+    background-color: rgba(191, 0, 48, 0.05);
+    color: var(--primary-color);
+    border-radius: 12px;
+    border: 3px solid var(--primary-color);
+}
+
+.genderIcon {
+    font-size: 24px;
+    display: block;
+}
+
+.genderText {
+    font-size: 16px;
+    display: block;
+    margin-top: 5px;
+}
+
+@media screen and (max-width: 1165px) {
+    .genderLabel {
+        width: 18%;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .genderLabel {
+        width: 45%;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .genderLabel {
+        width: 80%;
+    }
+}

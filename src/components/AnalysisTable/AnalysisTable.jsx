@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { fetchAnalysisData, deleteAnalysisEntry } from "../../services/statsService";
 import styles from "./AnalysisTable.module.css";
-import { FaEye, FaTrash, FaSearch } from "react-icons/fa";
+import { FaEye, FaTrash, FaSearch, FaDownload } from "react-icons/fa";
 import Modal from "../Modal/Modal";
 import { useStats } from "../../context/StatsContext";
 import Pagination from '@mui/material/Pagination';
 import { useDiagrams } from "../../context/DiagramContext";
 import CustomSelect from "./CustomSelect";
 import JSZip from "jszip";
-import { jsPDF } from "jspdf";
 import { downloadChatsService, downloadAnalysisService } from "../../services/downloadService";
 import * as XLSX from "xlsx";
+import { useUsers } from "../../context/UsersContext";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 const handleDirectDownload = async (type, selectedIds, format = "pdf") => {
     if (!selectedIds || selectedIds.length === 0) return;
@@ -19,17 +21,32 @@ const handleDirectDownload = async (type, selectedIds, format = "pdf") => {
     let hasContent = false;
 
     if (type === "chats") {
+        const allChatsData = [];
+
         for (const id of selectedIds) {
             const chatsData = await downloadChatsService({ ids: [id] });
-            if (chatsData?.length) {
-                const pdf = generateConversationPDF(chatsData[0]);
-                if (pdf) {
-                    zip.folder("chats").file(`chat-${id}.pdf`, pdf, { binary: true });
+            if (chatsData?.length) allChatsData.push(...chatsData);
+        }
+
+        if (format === "pdf") {
+            for (const chat of allChatsData) {
+                const pdfBlob = await generateConversationPDF(chat);
+                if (pdfBlob) {
+                    zip.folder("chats").file(`chat-${chat.session_id}.pdf`, pdfBlob, { binary: true });
                     hasContent = true;
+                } else {
+                    console.warn("PDF blob was empty for session:", chat.session_id);
                 }
+            }
+        } else if (format === "excel") {
+            const excel = generateConversationExcel(allChatsData);
+            if (excel) {
+                zip.folder("chats").file(`chats.xlsx`, excel, { binary: true });
+                hasContent = true;
             }
         }
     }
+
 
     if (type === "analysis") {
         const allAnalysisData = [];
@@ -41,9 +58,9 @@ const handleDirectDownload = async (type, selectedIds, format = "pdf") => {
         if (allAnalysisData.length > 0) {
             if (format === "pdf") {
                 for (const session of allAnalysisData) {
-                    const pdf = generateAnalysisPDF(session);
-                    if (pdf) {
-                        zip.folder("analysis").file(`analysis-${session.session_id}.pdf`, pdf, { binary: true });
+                    const pdfBlob = await generateAnalysisPDF(session);
+                    if (pdfBlob) {
+                        zip.folder("analysis").file(`analysis-${session.session_id}.pdf`, pdfBlob, { binary: true });
                         hasContent = true;
                     }
                 }
@@ -58,6 +75,45 @@ const handleDirectDownload = async (type, selectedIds, format = "pdf") => {
     }
 
     if (hasContent) {
+        if (format === "excel") {
+            const blob =
+                type === "chats"
+                    ? generateConversationExcel(await downloadChatsService({ ids: selectedIds }))
+                    : generateAnalysisExcel(await downloadAnalysisService({ ids: selectedIds }));
+
+            if (blob) {
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `${type}.xlsx`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            return;
+        }
+
+        if (format === "pdf" && selectedIds.length === 1) {
+            const data =
+                type === "chats"
+                    ? await downloadChatsService({ ids: selectedIds })
+                    : await downloadAnalysisService({ ids: selectedIds });
+
+            const pdfBlob =
+                type === "chats"
+                    ? await generateConversationPDF(data[0])
+                    : await generateAnalysisPDF(data[0]);
+
+            if (pdfBlob) {
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(pdfBlob);
+                link.download = `${type}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            return;
+        }
+
         const blob = await zip.generateAsync({ type: "blob" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
@@ -68,8 +124,9 @@ const handleDirectDownload = async (type, selectedIds, format = "pdf") => {
     } else {
         alert("No valid data found to download.");
     }
-}
 
+
+}
 function formatTimestamp(timestamp) {
     const dateObj = new Date(timestamp);
     if (isNaN(dateObj.getTime())) {
@@ -84,7 +141,6 @@ function formatTimestamp(timestamp) {
         second: "2-digit"
     });
 }
-
 function generateAnalysisExcel(sessionsData) {
     if (!sessionsData || sessionsData.length === 0) return null;
 
@@ -92,11 +148,12 @@ function generateAnalysisExcel(sessionsData) {
         "Session ID": session.session_id || "N/A",
         "Final Idea": session.final_idea || "N/A",
         "Total Messages": session.time_stats?.total_messages ?? 0,
-        "Total Duration (Minutes)": session.time_stats?.total_duration_minutes?.toFixed(2) ?? "0.00",
+        "Total Duration (minutes)": session.time_stats?.total_duration_minutes?.toFixed(2) ?? "0.00",
+        "AI latency (minutes)": session.time_stats?.avg_ai_latency_seconds?.toFixed(2) ?? "0.00",
         "Returned After 30 Mins": session.time_stats?.user_returned_after_30mins ? "Yes" : "No",
-        "Human Creativity": `${session.originality_score ?? "N/A"}%`,
-        "AI Score": `${session.assistant_influence_score ?? "N/A"}%`,
-        "Relevance": `${session.matching_score ?? "N/A"}%`,
+        "Human Influence Score": `${session.originality_score ?? "N/A"}%`,
+        "AI Influence Score": `${session.assistant_influence_score ?? "N/A"}%`,
+        "Interaction Influence Score": `${session.matching_score ?? "N/A"}%`,
         "Role Analaysis": session.matching_analysis?.role_analysis || "N/A",
         "Influence": session.matching_analysis?.influence || "N/A",
         "Original Elements": session.matching_analysis?.original_elements || "N/A",
@@ -110,265 +167,300 @@ function generateAnalysisExcel(sessionsData) {
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     return new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }
+async function generateConversationPDF(sessionData) {
+    if (!sessionData?.session_id || !sessionData.conversation_history) return;
 
-function generateConversationPDF(sessionData) {
-    if (!sessionData?.session_id || !sessionData.conversation_history) return null;
+    const container = document.createElement("div");
+    container.style.width = "595px";
+    container.style.padding = "30px 30px 80px";
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.fontSize = "11px";
+    container.style.lineHeight = "1.6";
+    container.style.backgroundColor = "white";
+    container.style.color = "#000";
 
-    const doc = new jsPDF({ unit: "pt", format: "A4" });
-    let x = 40, y = 60, lineHeight = 14;
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const bottomMargin = 60;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.setTextColor(191, 0, 48);
-    doc.text(`Session ID: ${sessionData.session_id}`, pageWidth / 2, y, { align: "center" });
-    y += 40;
-
-    const checkPageOverflow = (increment) => {
-        if (y + increment > pageHeight - bottomMargin) {
-            doc.addPage();
-            y = 60;
-        }
-    };
+    const title = document.createElement("h2");
+    title.innerText = `Session ID: ${sessionData.session_id}`;
+    title.style.textAlign = "center";
+    title.style.color = "#b10030";
+    title.style.marginBottom = "20px";
+    container.appendChild(title);
 
     sessionData.conversation_history.forEach((msg) => {
-        let role = msg.role ? msg.role.charAt(0).toUpperCase() + msg.role.slice(1) : "Unknown";
-        let content = msg.content || "";
-        let timestamp = formatTimestamp(msg.timestamp || "");
-        let size = msg.size ? `${msg.size}` : "N/A";
+        const block = document.createElement("div");
+        block.style.pageBreakInside = "avoid";
+        block.style.breakInside = "avoid";
+        block.style.marginBottom = "12px";
 
-        let finalText = content;
-        let sourceText = "";
+        const role = msg.role ? msg.role.charAt(0).toUpperCase() + msg.role.slice(1) : "Unknown";
+        const timestamp = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : "N/A";
+        const size = msg.size || "N/A";
+
+        let content = msg.content || "";
+        let source = "";
 
         if (role.toLowerCase() === "assistant") {
             try {
                 const parsed = JSON.parse(content);
-                if (parsed && typeof parsed === "object" && parsed.answer) {
-                    finalText = parsed.answer.replace(/\n/g, "\n");
-                    sourceText = parsed.sources ? parsed.sources.replace(/\n/g, ", ") : "";
-                }
-            } catch (e) {
-                console.log('...')
-            }
+                content = parsed?.answer || content;
+                source = parsed?.sources || "";
+            } catch (e) { }
         }
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
-        doc.setTextColor(191, 0, 48);
-        checkPageOverflow(lineHeight);
-        doc.text(`${role}:`, x, y);
-        y += lineHeight;
+        if (!content || content.trim() === "") content = "[Empty]";
 
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.setTextColor(0, 0, 0);
-        const wrappedContent = doc.splitTextToSize(finalText, 500);
-        wrappedContent.forEach((line) => {
-            checkPageOverflow(lineHeight);
-            doc.text(line, x, y);
-            y += lineHeight;
-        });
+        const roleLine = document.createElement("div");
+        roleLine.innerText = `${role}:`;
+        roleLine.style.fontWeight = "bold";
+        roleLine.style.color = "#b10030";
+        roleLine.style.marginBottom = "2px";
+        block.appendChild(roleLine);
 
-        if (sourceText) {
-            doc.setFont("helvetica", "italic");
-            doc.setFontSize(10);
-            doc.setTextColor(0, 0, 0);
+        const contentDiv = document.createElement("div");
+        contentDiv.innerText = content;
+        contentDiv.style.whiteSpace = "pre-wrap";
+        block.appendChild(contentDiv);
 
-            const formattedSources = `(Sources: ${sourceText})`;
-            const wrappedSources = doc.splitTextToSize(formattedSources, 500);
-            wrappedSources.forEach((line) => {
-                checkPageOverflow(lineHeight);
-                doc.text(line, x, y);
-                y += lineHeight;
-            });
+        if (source) {
+            const sourceDiv = document.createElement("div");
+            sourceDiv.innerText = `Sources: ${source}`;
+            sourceDiv.style.fontStyle = "italic";
+            sourceDiv.style.color = "#444";
+            sourceDiv.style.marginTop = "4px";
+            block.appendChild(sourceDiv);
         }
 
-        doc.setFont("helvetica", "italic");
-        doc.setFontSize(10);
-        doc.setTextColor(191, 0, 48);
-        checkPageOverflow(lineHeight);
-        doc.text(`(Time: ${timestamp}, Size: ${size})`, x, y);
-        y += (lineHeight + 6);
+        const infoLine = document.createElement("div");
+        infoLine.innerText = `(Time: ${timestamp}, Size: ${size})`;
+        infoLine.style.fontStyle = "italic";
+        infoLine.style.color = "#b10030";
+        infoLine.style.fontSize = "10px";
+        infoLine.style.marginTop = "6px";
+        block.appendChild(infoLine);
+
+        container.appendChild(block);
     });
 
-    return doc.output("blob");
-}
+    container.style.position = "absolute";
+    container.style.top = "-9999px";
+    document.body.appendChild(container);
 
-function generateAnalysisPDF(sessionData) {
+    const fullCanvas = await html2canvas(container, { scale: 2 });
+    const pdf = new jsPDF("p", "pt", "a4");
+
+    const pageHeightPt = pdf.internal.pageSize.getHeight();
+    const pageWidthPt = pdf.internal.pageSize.getWidth();
+    const imgWidth = pageWidthPt;
+    const imgHeight = (fullCanvas.height * imgWidth) / fullCanvas.width;
+
+    const topBottomMarginPt = 40;
+    const usableHeightPt = pageHeightPt - topBottomMarginPt * 2;
+    const usableHeightPx = (usableHeightPt * fullCanvas.height) / imgHeight - 20;
+
+    let renderedHeight = 0;
+    let pageCount = 0;
+
+    while (renderedHeight < fullCanvas.height) {
+        const pageCanvas = document.createElement("canvas");
+        const ctx = pageCanvas.getContext("2d");
+
+        pageCanvas.width = fullCanvas.width;
+        pageCanvas.height = Math.min(usableHeightPx, fullCanvas.height - renderedHeight);
+
+        ctx.drawImage(
+            fullCanvas,
+            0,
+            renderedHeight,
+            fullCanvas.width,
+            pageCanvas.height,
+            0,
+            0,
+            fullCanvas.width,
+            pageCanvas.height
+        );
+
+        const pageImgData = pageCanvas.toDataURL("image/png");
+        if (pageCount > 0) pdf.addPage();
+        pdf.addImage(pageImgData, "PNG", 0, topBottomMarginPt, pageWidthPt, (pageCanvas.height * pageWidthPt) / fullCanvas.width);
+
+        renderedHeight += pageCanvas.height;
+        pageCount++;
+    }
+
+    document.body.removeChild(container);
+    return pdf.output("blob");
+}
+async function generateAnalysisPDF(sessionData) {
     if (!sessionData?.session_id) return;
 
-    const doc = new jsPDF({
-        unit: "pt",
-        format: "A4",
-    });
+    const container = document.createElement("div");
+    container.style.width = "595px";
+    container.style.padding = "30px";
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.fontSize = "11px";
+    container.style.lineHeight = "1.6";
+    container.style.backgroundColor = "white";
+    container.style.color = "#000";
 
-    let x = 40;
-    let y = 60;
-    const lineHeight = 14;
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const bottomMargin = 60;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.setTextColor(191, 0, 48);
-    doc.text("ANALYSIS", pageWidth / 2, y, { align: "center" });
-    y += 30;
-
-    const checkPageOverflow = (increment) => {
-        if (y + increment > pageHeight - bottomMargin) {
-            doc.addPage();
-            y = 60;
-        }
+    const addTitle = (text) => {
+        const h2 = document.createElement("h2");
+        h2.innerText = text;
+        h2.style.textAlign = "center";
+        h2.style.color = "#b10030";
+        h2.style.marginBottom = "20px";
+        container.appendChild(h2);
     };
 
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(11);
-    doc.setTextColor(191, 0, 48);
-    doc.text("Final Idea:", x, y);
+    const addLine = (label, value) => {
+        const div = document.createElement("div");
+        const labelSpan = document.createElement("span");
+        labelSpan.innerText = label;
+        labelSpan.style.fontStyle = "italic";
+        labelSpan.style.color = "#b10030";
 
-    y += lineHeight;
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0);
+        const valueSpan = document.createElement("span");
+        valueSpan.innerText = " " + value;
+        valueSpan.style.color = "#000";
 
-    let finalIdeaText = sessionData.final_idea || "No data available.";
-    let splitted = doc.splitTextToSize(finalIdeaText, 500);
-    splitted.forEach((line) => {
-        checkPageOverflow(lineHeight);
-        doc.text(line, x, y);
-        y += lineHeight;
-    });
-    y += 10;
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(191, 0, 48);
-    doc.text("Total messages:", x, y);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${sessionData.time_stats?.total_messages ?? 0}`, x + 85, y);
-    y += lineHeight;
+        div.appendChild(labelSpan);
+        div.appendChild(valueSpan);
+        container.appendChild(div);
+    };
 
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(191, 0, 48);
-    doc.text("Total duration (minutes):", x, y);
+    const addBlock = (label, content) => {
+        const labelDiv = document.createElement("div");
+        labelDiv.innerText = label;
+        labelDiv.style.fontStyle = "italic";
+        labelDiv.style.color = "#b10030";
+        labelDiv.style.marginTop = "10px";
+        container.appendChild(labelDiv);
 
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${(sessionData.time_stats?.total_duration_minutes ?? 0).toFixed(2)}`, x + 125, y);
-    y += lineHeight;
+        const contentDiv = document.createElement("div");
+        contentDiv.innerText = content;
+        contentDiv.style.whiteSpace = "pre-wrap";
+        contentDiv.style.marginBottom = "8px";
+        container.appendChild(contentDiv);
+    };
 
-    const returned = sessionData.time_stats?.user_returned_after_30mins ? "Yes" : "No";
+    addTitle("ANALYSIS");
 
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(191, 0, 48);
-    doc.text("User returned after 30 mins:", x, y);
+    addBlock("Final Idea:", sessionData.final_idea || "No data available.");
 
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0);
-    doc.text(returned, x + 140, y);
-    y += lineHeight + 20;
+    const timeStats = sessionData.time_stats || {};
+    addLine("Total messages:", timeStats.total_messages ?? "0");
+    addLine("Total duration (minutes):", (timeStats.total_duration_minutes ?? 0).toFixed(2));
+    addLine("AI latency (minutes):", (timeStats.avg_ai_latency_seconds ?? 0).toFixed(2));
+    addLine("User returned after 30 mins:", timeStats.user_returned_after_30mins ? "Yes" : "No");
 
+    container.appendChild(document.createElement("br"));
 
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(191, 0, 48);
-    doc.text("Scores:", x, y);
-    y += lineHeight;
+    const scoreHeader = document.createElement("div");
+    scoreHeader.innerText = "Scores:";
+    scoreHeader.style.fontStyle = "italic";
+    scoreHeader.style.color = "#b10030";
+    scoreHeader.style.marginTop = "10px";
+    container.appendChild(scoreHeader);
 
-    doc.text("Human Creativity:", x, y);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${sessionData.originality_score ?? "N/A"}%`, x + 90, y);
-    y += lineHeight;
+    addLine("Human Influence Score:", `${sessionData.originality_score ?? "N/A"}%`);
+    addLine("AI Influence Score:", `${sessionData.assistant_influence_score ?? "N/A"}%`);
+    addLine("Interaction Influence Score:", `${sessionData.matching_score ?? "N/A"}%`);
 
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(191, 0, 48);
-    doc.text("AI Score:", x, y);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${sessionData.assistant_influence_score ?? "N/A"}%`, x + 50, y);
-    y += lineHeight;
+    const matching = sessionData.matching_analysis || {};
+    if (matching.role_analysis) addBlock("Role Analysis:", matching.role_analysis);
+    if (matching.influence) addBlock("Influence:", matching.influence);
+    if (matching.original_elements) addBlock("Original Elements:", matching.original_elements);
+    if (matching.overall_assessment) addBlock("Overall Assessment:", matching.overall_assessment);
 
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(191, 0, 48);
-    doc.text("Revelance:", x, y);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${sessionData.matching_score ?? "N/A"}%`, x + 60, y);
-    y += lineHeight + 10;
+    container.style.position = "absolute";
+    container.style.top = "-9999px";
+    document.body.appendChild(container);
 
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(191, 0, 48);
-    doc.text("Matching Analysis:", x, y);
-    y += lineHeight;
+    const fullCanvas = await html2canvas(container, { scale: 2 });
+    const pdf = new jsPDF("p", "pt", "a4");
 
-    const { role_analysis, influence, original_elements, overall_assessment } = sessionData.matching_analysis ?? {};
+    const pageHeightPt = pdf.internal.pageSize.getHeight();
+    const pageWidthPt = pdf.internal.pageSize.getWidth();
+    const imgWidth = pageWidthPt;
+    const imgHeight = (fullCanvas.height * imgWidth) / fullCanvas.width;
+    const pageHeightPx = (pageHeightPt * fullCanvas.height) / imgHeight;
 
-    if (role_analysis) {
-        doc.setFont("helvetica", "italic");
-        doc.setTextColor(191, 0, 48);
-        doc.text("Role Analysis:", x, y);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(0, 0, 0);
-        y += lineHeight;
-        const lines = doc.splitTextToSize(role_analysis, 500);
-        lines.forEach((ln) => {
-            checkPageOverflow(lineHeight);
-            doc.text(ln, x, y);
-            y += lineHeight;
-        });
+    let renderedHeight = 0;
+    let pageCount = 0;
+
+    while (renderedHeight < fullCanvas.height) {
+        const pageCanvas = document.createElement("canvas");
+        const ctx = pageCanvas.getContext("2d");
+
+        pageCanvas.width = fullCanvas.width;
+        pageCanvas.height = Math.min(pageHeightPx, fullCanvas.height - renderedHeight);
+
+        ctx.drawImage(
+            fullCanvas,
+            0,
+            renderedHeight,
+            fullCanvas.width,
+            pageCanvas.height,
+            0,
+            0,
+            fullCanvas.width,
+            pageCanvas.height
+        );
+
+        const pageImgData = pageCanvas.toDataURL("image/png");
+        if (pageCount > 0) pdf.addPage();
+        pdf.addImage(pageImgData, "PNG", 0, 0, pageWidthPt, (pageCanvas.height * pageWidthPt) / fullCanvas.width);
+
+        renderedHeight += pageCanvas.height;
+        pageCount++;
     }
 
-    if (influence) {
-        doc.setFont("helvetica", "italic");
-        doc.setTextColor(191, 0, 48);
-        doc.text("Influence:", x, y);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(0, 0, 0);
-        y += lineHeight;
-        const lines = doc.splitTextToSize(influence, 500);
-        lines.forEach((ln) => {
-            checkPageOverflow(lineHeight);
-            doc.text(ln, x, y);
-            y += lineHeight;
-        });
-    }
-
-    if (original_elements) {
-        doc.setFont("helvetica", "italic");
-        doc.setTextColor(191, 0, 48);
-        doc.text("Original Elements:", x, y);
-
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(0, 0, 0);
-        y += lineHeight;
-        const lines = doc.splitTextToSize(original_elements, 500);
-        lines.forEach((ln) => {
-            checkPageOverflow(lineHeight);
-            doc.text(ln, x, y);
-            y += lineHeight;
-        });
-    }
-
-    if (overall_assessment) {
-        doc.setFont("helvetica", "italic");
-        doc.setTextColor(191, 0, 48);
-        doc.text("Overall Assessment:", x, y);
-
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(0, 0, 0);
-        y += lineHeight;
-        const lines = doc.splitTextToSize(overall_assessment, 500);
-        lines.forEach((ln) => {
-            checkPageOverflow(lineHeight);
-            doc.text(ln, x, y);
-            y += lineHeight;
-        });
-    }
-
-    return doc.output("blob");
+    document.body.removeChild(container);
+    return pdf.output("blob");
 }
+function generateConversationExcel(sessionDataArray) {
+    if (!sessionDataArray || sessionDataArray.length === 0) return null;
 
+    const rows = [];
+
+    for (const session of sessionDataArray) {
+        const sessionId = session.session_id || "N/A";
+        const history = session.conversation_history || [];
+
+        history.forEach((msg) => {
+            const isAI = msg.role?.toLowerCase() === "assistant";
+            let text = msg.content || "";
+            let source = "";
+            let timestamp = formatTimestamp(msg.timestamp || "");
+
+            if (isAI) {
+                try {
+                    const parsed = JSON.parse(text);
+                    if (parsed && typeof parsed === "object") {
+                        text = parsed.answer || text;
+                        source = parsed.sources || "";
+                    }
+                } catch (e) {
+                    // fallback to raw text
+                }
+            }
+
+            rows.push({
+                "Session ID": sessionId,
+                "Speaker": isAI ? "AI" : "Human",
+                "Text": text,
+                "Source": isAI ? source : "",
+                "Time": timestamp,
+            });
+        });
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Chats");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    return new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
 const AnalysisTable = () => {
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
@@ -381,12 +473,14 @@ const AnalysisTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState([]);
     const rowsPerPage = 10;
+    const { refreshUsers } = useUsers();
     const { refreshStats } = useStats();
     const { refreshDiagrams } = useDiagrams();
     const [showDownloadModal, setShowDownloadModal] = useState(false);
     const [downloadType, setDownloadType] = useState(null);
     const [showFormatOptions, setShowFormatOptions] = useState(false);
-    ;
+    const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+
 
     useEffect(() => {
         loadData();
@@ -438,6 +532,7 @@ const AnalysisTable = () => {
                 setFilteredData(prev => prev.filter(item => item.session_id !== sessionToDelete));
                 setData(prev => prev.filter(item => item.session_id !== sessionToDelete));
                 refreshStats();
+                refreshUsers();
                 refreshDiagrams();
                 setShowSuccessModal(true);
                 setTimeout(() => {
@@ -473,6 +568,33 @@ const AnalysisTable = () => {
         setCurrentPage(value);
     };
 
+    const handleConfirmBulkDelete = async () => {
+        try {
+            setShowBulkDeleteModal(false);
+
+            await Promise.all(
+                selectedRows.map((sessionId) => deleteAnalysisEntry(sessionId))
+            );
+
+            const updatedData = data.filter(item => !selectedRows.includes(item.session_id));
+            setData(updatedData);
+            setFilteredData(updatedData);
+            setSelectedRows([]);
+
+            refreshStats();
+            refreshDiagrams();
+            refreshUsers();
+            setShowSuccessModal(true);
+            setTimeout(() => {
+                setShowSuccessModal(false);
+            }, 2000);
+        } catch (error) {
+            console.error("Error while deleting sessions:", error);
+            alert("An error occurred while deleting the selected sessions.");
+        }
+    };
+
+
     const startIndex = (currentPage - 1) * rowsPerPage;
     const currentData = filteredData.slice(startIndex, startIndex + rowsPerPage);
     const totalPages = Math.ceil(filteredData.length / rowsPerPage);
@@ -493,8 +615,12 @@ const AnalysisTable = () => {
                             <div className={styles.downloadButtons}>
                                 <div className={styles.dropdownContainer}>
                                     <CustomSelect
-                                        value="Download Analysis"
-                                        options={["PDF", "Excel"]}
+                                        value={
+                                            <span className={styles.spanButton}>
+                                                <FaDownload />
+                                                Analysis
+                                            </span>
+                                        } options={["PDF", "Excel"]}
                                         onChange={(format) => {
                                             if (selectedRows.length === 0) return;
                                             handleDirectDownload("analysis", selectedRows, format.toLowerCase());
@@ -502,14 +628,31 @@ const AnalysisTable = () => {
                                         disabled={selectedRows.length === 0}
                                     />
                                 </div>
+                                <div className={styles.dropdownContainer}>
+                                    <CustomSelect
+                                        value={
+                                            <span className={styles.spanButton}>
+                                                <FaDownload />
+                                                Chats
+                                            </span>
+                                        }
+                                        options={["PDF", "Excel"]}
+                                        onChange={(format) => {
+                                            if (selectedRows.length === 0) return;
+                                            handleDirectDownload("chats", selectedRows, format.toLowerCase());
+                                        }}
+                                        disabled={selectedRows.length === 0}
+                                    />
+                                </div>
                                 <button
                                     className={styles.downloadBtn}
-                                    onClick={() => {
-                                        handleDirectDownload("chats", selectedRows);
-                                    }}
+                                    onClick={() => setShowBulkDeleteModal(true)}
                                     disabled={selectedRows.length === 0}
                                 >
-                                    Download Chats
+                                    <span className={styles.spanButton}>
+                                        <FaTrash /> Users
+                                    </span>
+
                                 </button>
                             </div>
                             <div className={styles.inputField}>
@@ -539,11 +682,12 @@ const AnalysisTable = () => {
                                         <th>Session ID</th>
                                         <th>Total Messages</th>
                                         <th>Duration (mins)</th>
+                                        <th>AI latency</th>
                                         <th>Date</th>
                                         <th>Returned</th>
-                                        <th>Human Creativity</th>
-                                        <th>AI Score</th>
-                                        <th>Relevance</th>
+                                        <th>Human Influence Score</th>
+                                        <th>AI Influence Score</th>
+                                        <th>Interaction Influence Score</th>
                                         <th colSpan={2}>Actions</th>
                                     </tr>
                                 </thead>
@@ -565,6 +709,7 @@ const AnalysisTable = () => {
                                                 <td>{item.session_id}</td>
                                                 <td>{item.time_stats?.total_messages || 0}</td>
                                                 <td>{item.time_stats?.total_duration_minutes?.toFixed(2) || "0.00"}</td>
+                                                <td>{item.time_stats?.avg_ai_latency_seconds?.toFixed(2) || "0.00"}</td>
                                                 <td>{new Date(item.created_at).toLocaleDateString()}</td>
                                                 <td>{item.time_stats?.user_returned_after_30mins ? "✅" : "❌"}</td>
                                                 <td>{item.originality_score === 0 ? "0" : item.originality_score || "N/A"}</td>
@@ -647,6 +792,14 @@ const AnalysisTable = () => {
                     type="success"
                     message="Session deleted successfully!"
                     onClose={() => setShowSuccessModal(false)}
+                />
+            )}
+            {showBulkDeleteModal && (
+                <Modal
+                    type="Warning"
+                    message={`Are you sure you want to delete ${selectedRows.length} selected session(s)?`}
+                    onClose={() => setShowBulkDeleteModal(false)}
+                    onConfirm={handleConfirmBulkDelete}
                 />
             )}
 

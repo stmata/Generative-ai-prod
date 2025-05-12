@@ -1,8 +1,8 @@
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
 import styles from "./TimeStatistics.module.css";
 
-const TimeStatistics = ({ totalMessages, duration, avgUserSize, avgAiSize }) => {
+const TimeStatistics = ({ totalMessages, duration, ai_latency, avgUserSize, avgAiSize }) => {
 
     return (
         <div className={styles.containerStatUser}>
@@ -10,6 +10,7 @@ const TimeStatistics = ({ totalMessages, duration, avgUserSize, avgAiSize }) => 
 
             <p className={styles.msgs}><strong className={styles.strongg}>Total Messages:</strong> {totalMessages}</p>
             <p className={styles.time}><strong className={styles.strongg}>Total Duration:</strong> {duration.toFixed(2)} min</p>
+            <p className={styles.time}><strong className={styles.strongg}>AI latency:</strong> {ai_latency.toFixed(2)} min</p>
 
             <div className={styles.chart}>
                 <BarChart width={370} height={250} data={[

@@ -1,47 +1,13 @@
+
+:root {
+  --primary-color: #bf0030;
+  --primary-color-rgb: 191, 0, 48;
+}
+
 .containerFilters {
   background: white;
   padding: 16px;
   margin-top: 20px;
-}
-
-.headerFilters {
-  display: flex;
-  align-items: center;
-}
-
-.titleFilters {
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.tabsContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
-  border-bottom: 2px solid #ccc;
-}
-
-.tabs {
-  display: flex;
-  gap: 16px;
-  font-size: 1.2rem;
-}
-
-.tab,
-.activeTab {
-  cursor: pointer;
-  padding: 6px 12px;
-}
-
-.activeTab {
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
-  margin-bottom: -6px;
-}
-
-.tab {
-  color: #777;
 }
 
 .inputField {
@@ -54,7 +20,7 @@
   background-color: white;
   font-size: 1rem;
   width: 250px;
-  margin-bottom: 10px;
+  height: 50px;
 }
 
 .resetIcon {
@@ -64,8 +30,8 @@
   justify-content: center;
   font-size: 1.5rem;
   color: var(--primary-color);
-  margin-left: auto;
-  padding: 0 10px;
+  height: 50px;
+  width: 50px;
 }
 
 
@@ -82,6 +48,7 @@
   background-color: white;
   font-weight: bold;
   font-size: 1.1rem;
+  height: 100%;
 }
 
 .searchIcon {
@@ -90,71 +57,344 @@
   color: var(--primary-color);
 }
 
-.filters {
-  display: flex;
-  gap: 12px;
-  margin-top: 3vh;
-}
-
-.datePicker {
-  height: 100px;
-  width: 100%;
-}
-
 .dropdown {
   width: 250px;
   height: 45px;
   background: white;
   border: 1px solid #ccc;
   border-radius: 5px;
+  text-align: left;
 }
 
-@media screen and (max-width: 1000px) {
-  .headerFilters {
-    flex-direction: column;
+.filterControl {
+  height: 50px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0 12px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.filtersRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  margin-left: auto; 
+  gap: 10px;
+}
+
+:global(.MuiOutlinedInput-root) {
+  height: 50px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: none;
+}
+
+:global(.MuiOutlinedInput-root:hover fieldset),
+:global(.MuiOutlinedInput-root.Mui-focused fieldset) {
+  border-color: var(--primary-color);
+  box-shadow: none;
+  border: 2px solid var(--primary-color) !important;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15) !important;
+}
+
+:global(.MuiMenuItem-root:hover) {
+  background-color: rgba(var(--primary-color-rgb), 0.25) !important;
+}
+
+:global(.MuiOutlinedInput-notchedOutline) {
+  border: none !important;
+}
+
+:global(.MuiInputLabel-root) {
+  color: #777;
+}
+
+:global(.MuiSelect-icon) {
+  color: var(--primary-color);
+  font-size: 1rem;
+}
+
+:global(.MuiOutlinedInput-root:focus),
+:global(.MuiInputBase-root:focus),
+:global(.MuiInputBase-root.Mui-focused),
+:global(input:focus),
+:global(select:focus),
+:global(textarea:focus) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline),
+:global(.Mui-focused .MuiInputLabel-root),
+:global(.MuiInputLabel-root.Mui-focused),
+:global(.MuiSelect-icon),
+:global(.MuiSelect-root.Mui-focused),
+:global(.Mui-focused .MuiSelect-select),
+:global(.MuiSelect-select:focus),
+:global(.MuiInputBase-root.Mui-focused),
+:global(.MuiOutlinedInput-root.Mui-focused) {
+  border-color: var(--primary-color) !important;
+  box-shadow: none !important;
+}
+
+:global(.MuiSelect-select.MuiSelect-select) {
+  font-weight: bold;
+}
+
+
+:global(.MuiInputLabel-root.Mui-focused) {
+  color: var(--primary-color) !important;
+}
+
+:global(.MuiSelect-icon) {
+  color: var(--primary-color) !important;
+}
+
+:global(.MuiMenuItem-root.Mui-selected) {
+  background-color: rgba(var(--primary-color-rgb), 0.15) !important;
+}
+
+:global(.MuiMenuItem-root.Mui-selected:hover) {
+  background-color: rgba(var(--primary-color-rgb), 0.25) !important;
+}
+
+
+:global(.MuiPickersDay-root.Mui-selected:hover) {
+  background-color: rgba(var(--primary-color-rgb), 0) !important;
+  color: var(--primary-color) !important;
+}
+
+:global(.MuiPickersDay-root.MuiPickersDay-today) {
+  border: 1px solid var(--primary-color) !important;
+}
+
+:global(.MuiPickersCalendarHeader-label),
+:global(.MuiPickersToolbarText-root),
+:global(.MuiTypography-root.MuiDayPicker-weekDayLabel),
+:global(.MuiTypography-root.MuiPickersToolbarText-root.Mui-selected) {
+  color: var(--primary-color) !important;
+}
+
+:global(.MuiPickersToolbarButton-root.Mui-selected) {
+  color: var(--primary-color) !important;
+}
+
+:global(.MuiDialogActions-root .MuiButton-root) {
+  color: var(--primary-color) !important;
+}
+:global(.MuiSvgIcon-root) {
+  color: var(--primary-color) !important;
+}
+
+
+
+:global(.MuiPickersDay-root.MuiPickersDay-today) {
+  border: 1px solid var(--primary-color) !important;
+}
+
+:global(.MuiPickersDay-root.MuiPickersDay-today.Mui-selected) {
+  background-color: rgba(var(--primary-color-rgb), 0) !important;
+}
+:global(.MuiOutlinedInput-root.Mui-focused:hover) {
+  box-shadow: none !important;
+}
+
+:global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline),
+:global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
+  border-color: var(--primary-color) !important;
+  box-shadow: none !important;
+}
+
+:global(.MuiPickersDay-root:hover) {
+  background-color: rgba(var(--primary-color-rgb), 0.1) !important;
+}
+
+:global(.MuiPickersDay-root.Mui-disabled.Mui-selected) {
+  background-color: rgba(var(--primary-color-rgb), 0.2) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+:global(.MuiSvgIcon-root),
+:global(.MuiPickersCalendarHeader-label) {
+  color: var(--primary-color) !important;
+}
+:global(.MuiInputAdornment-root button:focus),
+:global(.MuiInputAdornment-root button:focus-visible),
+:global(.MuiInputAdornment-root button.Mui-focusVisible) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+:global(.MuiPickersDay-root:active) {
+  background-color: rgba(var(--primary-color-rgb), 0.25) !important;
+  border: 2px solid var(--primary-color) !important;
+  color: black !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:global(.MuiPickersDay-root.Mui-selected) {
+  background-color: rgba(var(--primary-color-rgb), 0.15) !important;
+  color: black !important;
+  border: 2px solid var(--primary-color) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+:global(.MuiPickersDay-root.Mui-selected.Mui-focusVisible),
+:global(.MuiPickersDay-root.Mui-focusVisible),
+:global(.MuiPickersDay-root:focus),
+:global(.MuiPickersDay-root:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: var(--primary-color-rgb) !important;
+}
+
+:global(.MuiPickersArrowSwitcher-button:focus),
+:global(.MuiPickersArrowSwitcher-button:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:global(.MuiPickersArrowSwitcher-button svg) {
+  color: var(--primary-color) !important;
+}
+
+:global(.MuiYearCalendar-root .Mui-selected),
+:global(.MuiYearCalendar-root .Mui-selected.Mui-focusVisible),
+:global(.MuiYearCalendar-root .MuiButtonBase-root.Mui-focusVisible),
+:global(.MuiYearCalendar-root .MuiButtonBase-root:focus-visible),
+:global(.MuiYearCalendar-root .MuiButtonBase-root:focus) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+:global(.MuiYearCalendar-root .Mui-selected) {
+  background-color: white !important;
+  color: var(--primary-color) !important;
+  font-weight: bolder;
+  outline: none !important;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+:global(.MuiYearCalendar-root .MuiButtonBase-root.Mui-selected) {
+  background-color: rgba(var(--primary-color-rgb), 0.15) !important;
+  color: black !important;
+  border: 2px solid var(--primary-color) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+:global(.MuiYearCalendar-root .MuiButtonBase-root.Mui-focusVisible),
+:global(.MuiYearCalendar-root .MuiButtonBase-root:focus),
+:global(.MuiYearCalendar-root .MuiButtonBase-root:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 2px solid var(--primary-color) !important;
+}
+
+:global(.MuiYearCalendar-root .MuiButtonBase-root:hover) {
+  background-color: rgba(var(--primary-color-rgb), 0.07) !important;
+}
+
+:global(.MuiYearCalendar-root .MuiButtonBase-root:active) {
+  background-color: rgba(var(--primary-color-rgb), 0.25) !important;
+  border: 2px solid var(--primary-color) !important;
+  transform: scale(0.97);
+  transition: background-color 0.1s ease, transform 0.05s;
+}
+
+:global(.MuiYearCalendar-root .MuiButtonBase-root.Mui-focusVisible),
+:global(.MuiYearCalendar-root .MuiButtonBase-root:focus),
+:global(.MuiYearCalendar-root .MuiButtonBase-root:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 2px solid var(--primary-color) !important;
+}
+
+:global(.MuiYearCalendar-root .MuiPickersYear-yearButton) {
+  display: flex;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+
+}
+
+:global(.MuiYearCalendar-root .MuiPickersYear-yearButton.Mui-selected) {
+  background-color: white !important;
+  color: var(--primary-color);
+  font-weight: bold;  box-shadow: none !important;
+  outline: none !important;
+}
+
+:global(.MuiYearCalendar-root .MuiPickersYear-yearButton:focus),
+:global(.MuiYearCalendar-root .MuiPickersYear-yearButton:focus-visible),
+:global(.MuiYearCalendar-root .MuiPickersYear-yearButton.Mui-focusVisible) {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: white !important;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+:global(.MuiYearCalendar-root .MuiPickersYear-yearButton:active) {
+  background-color: rgba(var(--primary-color-rgb), 0.25) !important;
+  transform: scale(0.97);
+}
+
+@media screen and (max-width: 1200px) {
+  .filtersRow {
+    display: flex;
+    gap: 4px !important;
+    justify-content: none;
+    width: 100%;
+    flex-wrap: wrap; 
   }
 
-  .tabsContainer {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+  .inputField,
+  .dropdown,
+  .filterControl,
+  .searchWrapper,
+  .timePickerWrapper{
+    width: calc(50% - 2px); 
+    min-width: 160px;
+    
   }
-
-  .tabs {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .inputField {
-    width: 70%;
-  }
-
-  .inputField {
-    margin-top: 2vh;
-  }
-
-  .dropdown {
-    width: 29%;
+  .inputField{
+    width: 500px;
   }
 }
 
 @media screen and (max-width: 600px) {
-  .titleFilters {
-    font-size: 1.4rem;
+  .filtersRow{
+    margin-top: 30px;
   }
-
-  .tabs {
-    font-size: 1rem;
-    gap: 8px;
-  }
-
-  .inputField {
-    font-size: 0.9rem;
-    padding: 6px 10px;
-  }
-
-  .dropdown {
-    height: 40px;
+  .inputField,
+  .dropdown,
+  .filterControl,
+  .searchWrapper,
+  .timePickerWrapper {
+    width: 100%; 
   }
 }

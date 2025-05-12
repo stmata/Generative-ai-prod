@@ -11,6 +11,7 @@ export const UsersProvider = ({ children }) => {
     const loadUsers = async () => {
       setLoadingUsers(true);
       const data = await fetchUsers();
+      console.log(data)
       setUsers(data);
       setLoadingUsers(false);
     };

@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     font-family: sans-serif;
+    margin-top: 20px;
 }
 
 .textSizeTitle {
@@ -129,8 +130,123 @@
         padding: 10px;
     }
 }
+
 @media (max-width: 600px) {
-.textSizeLabel{
-    width: 95%;
+    .textSizeLabel {
+        width: 95%;
+        margin: 0 auto;
+    }
+}
+
+
+
+.selectorColumn {
+    flex: 1;
+}
+
+.responseSizeSelector {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.selectorColumn {
+    flex: 1;
+}
+
+
+.totalEstimate {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #fff, #f3f3f3);
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+
+}
+
+.totalEstimate strong {
+    display: block;
+    font-size: 1rem;
+    color: #b10030;
+    margin-bottom: 8px;
+}
+
+.totalEstimate p {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.4;
+}
+
+.totalEstimate p:last-child {
+    margin-top: 4px;
+    font-size: 1.1rem;
+    color: #111;
+}
+
+
+
+.customInput {
+    width: 100%;
+    height: var(--input-height);
+    padding: var(--input-padding);
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: var(--input-radius);
+    border: 2px solid transparent;
+    box-shadow: var(--shadow);
+    text-align: center;
+    background-color: white;
+    color: black;
+    transition: 0.3s ease;
+    outline: none;
+}
+
+.customInput:focus {
+    border: 2px solid var(--primary-color);
+}
+
+@media (max-width: 950px) {
+
+    .responseSizeSelector,
+    .charInputStack {
+        flex-direction: column;
+    }
+
+    .selectorColumn {
+        margin: 0px !important;
+        width: 100% !important;
+    }
+
+    .textSizeTitle {
+        align-items: start;
+    }
+
+    .textSizeOptions {
+        gap: 1rem;
+    }
+
+    .charInput {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .selectorColumn {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+.totalEstimate{
+    width: 80%;
     margin: 0 auto;
-}}
+    margin-top: 20px;
+}
+
+    .textSizeLabel {
+        width: 80% !important;
+    }
+}

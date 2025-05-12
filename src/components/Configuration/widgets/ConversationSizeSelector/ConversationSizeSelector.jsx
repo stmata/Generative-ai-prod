@@ -45,7 +45,6 @@ function ConversationSizeSelector({
             <p className={styles.selectorSubtitle}>
                 Choose how long the conversation should be.
             </p>
-
             <div className={styles.modeButtons}>
                 <div className={styles.modeButtonWrapper}>
                     <button className={styles.modeButton} type="button" disabled>
@@ -55,7 +54,6 @@ function ConversationSizeSelector({
                         </p>
                     </button>
                     <div className={styles.durationInputWrapper}>
-
                         <input
                             type="text"
                             value={messageValue}
@@ -65,7 +63,6 @@ function ConversationSizeSelector({
                         />
                     </div>
                 </div>
-
                 <div className={styles.modeButtonWrapper}>
                     <button className={styles.modeButton} type="button" disabled>
                         <LuTimer /> Duration
@@ -111,13 +108,11 @@ function ConversationSizeSelector({
                             }}
                         />
                     </div>
-
                 </div>
             </div>
         </div>
     );
 }
-
 ConversationSizeSelector.propTypes = {
     messageValue: PropTypes.string.isRequired,
     setMessageValue: PropTypes.func.isRequired,

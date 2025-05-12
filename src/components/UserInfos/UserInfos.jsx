@@ -75,6 +75,7 @@ const UserInfos = ({ sessionId, onBack }) => {
             <TimeStatistics
               totalMessages={userData.time_stats?.total_messages || 0}
               duration={userData.time_stats?.total_duration_minutes || 0}
+              ai_latency={userData.time_stats?.avg_ai_latency_seconds || 0}
               avgUserSize={userData.size_stats?.avg_user_size || 0}
               avgAiSize={userData.size_stats?.avg_ai_size || 0}
             />

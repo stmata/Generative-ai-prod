@@ -47,7 +47,7 @@ const Diagrams = () => {
             <div className={styles.chart}>
                 <h3 className={styles.titlr}>Heatmap: Originality vs Messages</h3>
                 <BarChart width={300} height={280} data={data.heatmap_data}>
-                    <XAxis dataKey="_id" label={{ value: "Originality Score", position: "insideBottom", offset: -2 }} />
+                    <XAxis dataKey="_id" label={{ value: "Human Influence Score", position: "insideBottom", offset: -2 }} />
                     <YAxis label={{ value: "Messages", angle: -90, position: "insideLeft" }} />
                     <Tooltip />
                     <Bar dataKey="avg_messages" fill="black" />
@@ -80,7 +80,7 @@ const Diagrams = () => {
                 </div>
             </div>
 
-            <div className={styles.chart}>
+            {/* <div className={styles.chart}>
                 <h3 className={styles.titlr}>AI Score vs Human Creativity</h3>
                 <PieChart width={300} height={250}>
                     <Pie
@@ -103,7 +103,7 @@ const Diagrams = () => {
                         <div className={styles.color_box} style={{ background: "black" }}></div> Human Creativity
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

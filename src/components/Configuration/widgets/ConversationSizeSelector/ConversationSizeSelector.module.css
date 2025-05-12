@@ -144,6 +144,10 @@
     }
 
     .selectorContainer {
+        width: 100%;
+        margin: 0 auto;
+    }
+    .modeButtonWrapper{
         width: 80%;
         margin: 0 auto;
     }
@@ -168,6 +172,7 @@
     .selectorContainer {
         width: 95%;
         margin: 0 auto;
+        text-align: start !important;
     }
 }
 

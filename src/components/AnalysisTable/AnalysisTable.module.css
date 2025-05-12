@@ -311,6 +311,7 @@ input[type="checkbox"]:checked::after {
   background-color: #f8f8f8;
   color: #aaa;
 }
+
 .topControls {
   display: flex;
   flex-wrap: wrap;
@@ -432,7 +433,9 @@ input[type="checkbox"]:checked::after {
     align-items: stretch;
   }
 
-  .downloadButtons,.selected,.dropdownContainer{
+  .downloadButtons,
+  .selected,
+  .dropdownContainer {
     width: 100%;
     flex-direction: column;
   }
@@ -447,3 +450,9 @@ input[type="checkbox"]:checked::after {
   }
 }
 
+
+.spanButton {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}

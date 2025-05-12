@@ -20,15 +20,15 @@
     }
 }
 
-.cardHeader {
+/* .cardHeader {
     display: flex;
     align-items: center;
     width: 100%;
     position: relative;
     justify-content: center;
-}
+} */
 
-.userImage {
+/* .userImage {
     padding-top: 3rem;
     padding-bottom: 2rem;
     display: flex;
@@ -46,14 +46,6 @@
     color: var(--primary-color);
 }
 
-.deleteIcon {
-    font-size: 1.5rem;
-    cursor: pointer;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    color: gray;
-}
 
 .session_id {
     font-size: 1.5rem;
@@ -69,7 +61,7 @@
 
 .clockIcon {
     font-size: 16px;
-}
+} */
 
 /* .timeDivider {
     width: 180%;
@@ -78,7 +70,7 @@
     background: gray;
     border-radius: 5px;
 } */
-
+/* 
 .userCard {
     background: white;
     border-radius: 15px;
@@ -95,9 +87,9 @@
     flex-direction: column;
     flex: 1;
     width: 100%;
-}
+} */
 
-.timeInfo {
+/* .timeInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -114,9 +106,9 @@
     color: var(--primary-color);
     font-size: 1.6rem;
     margin-bottom: 2rem;
-}
+} */
 
-
+/* 
 .userCard:hover .userIcon {
     color: black;
 }
@@ -132,4 +124,153 @@
     text-align: center;
     padding: 20px;
     margin: 40px 0;
-}
+} */
+
+
+
+
+
+.tableWrapper {
+    padding: 20px;
+    overflow-x: auto;
+  }
+  
+  .userTable {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+ 
+  .userTable th,
+  .userTable td {
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .userTable th {
+    background-color: #f9f9f9;
+    color: #b10030;
+    font-weight: bold;
+    font-size: 20px;
+  }
+  
+  .userTable tbody tr:hover {
+    background-color: rgba(191, 0, 48, 0.07); /* Soft --primary-color */
+  }
+  
+
+  .deleteIcon {
+    font-size: 1.2rem;
+    color: gray;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  
+  .deleteIcon:hover {
+    color: var(--primary-color);
+  }
+  
+  .iconDanger {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+  }
+  
+  .iconNeutral {
+    color: gray;
+    font-size: 1.3rem;
+  }
+  
+  .userType {
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  
+  .noResults {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-top: 40px;
+  }
+  .iconTypeLarge {
+    font-size: 35px;
+    color: gray;
+  }
+  
+  .sessionId {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+  }
+  
+  .userTable td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .sessionId {
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+  }
+  
+.userTable tbody tr:hover .iconTypeLarge {
+    color: var(--primary-color);
+  }
+  @media screen and (max-width: 1000px) {
+    .userTable th,
+    .userTable td {
+      font-size: 16px;
+      padding: 10px 12px;
+    }
+  
+    .sessionId {
+      font-size: 18px;
+    }
+  
+    .iconTypeLarge {
+      font-size: 28px;
+    }
+  
+    .userTable {
+      min-width: unset;
+      font-size: 14px;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .tableWrapper {
+      padding: 10px;
+    }
+  
+    .userTable th,
+    .userTable td {
+      font-size: 14px;
+      padding: 8px 10px;
+    }
+  
+    .sessionId {
+      font-size: 16px;
+    }
+  
+    .iconTypeLarge {
+      font-size: 24px;
+    }
+  
+    .userTable th {
+      font-size: 16px;
+    }
+  
+    .noResults {
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+  }
+  

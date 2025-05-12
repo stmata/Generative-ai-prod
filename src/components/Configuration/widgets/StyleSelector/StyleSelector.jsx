@@ -20,14 +20,12 @@ function StyleSelector({ style, setStyle }) {
         }
     }, [style, setStyle]);
 
-
     return (
         <div className={styles.styleSelector}>
             <h3 className={styles.styleTitle}>
                 <FaPalette className={styles.styleTitleIcon} /> Style
             </h3>
             <p className={styles.styleSubtitle}>Choose which style you would like to use.</p>
-
             <div className={styles.styleOptions}>
                 {stylesOptions.map((s) => (
                     <label
